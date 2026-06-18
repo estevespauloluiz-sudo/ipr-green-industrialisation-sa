@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Consolidated Dashboard South Africa — Green Industrialisation & IP Landscape v5.0</title>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.23.7/babel.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#F9FAFB;color:#1F2937;}
+.tab-btn{padding:10px 18px;font-size:13px;font-weight:600;border:none;cursor:pointer;transition:all .15s;}
+.tab-btn:hover{background:#F3F4F6;}
+.country-pill{padding:8px 16px;border-radius:999px;font-weight:700;font-size:13px;cursor:pointer;border:2px solid transparent;transition:all .15s;}
+.stage-card:hover, .ph-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.06);}
+.policy-link{color:#1D4ED8;font-weight:600;text-decoration:underline dotted;}
+.policy-link:hover{color:#1E3A8A;}
+[data-tip]{position:relative;border-bottom:1px dotted #6B7280;cursor:help;}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;left:0;top:120%;background:#1F2937;color:#fff;font-size:11px;padding:6px 10px;border-radius:6px;white-space:normal;max-width:320px;width:max-content;z-index:50;line-height:1.45;box-shadow:0 4px 12px rgba(0,0,0,.18);}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="env,react">
+const {useState, useMemo} = React;
+const ABBR = {
+  "ABEEOLICA": "Associacao Brasileira de Energia Eolica",
+  "ABNT": "Associacao Brasileira de Normas Tecnicas",
+  "AC": "Alternating Current",
+  "ADMS": "Advanced Distribution Management System",
+  "AFD": "Agence Francaise de Developpement",
+  "AGII": "Africa Green Industrialisation Initiative",
+  "AGOA": "African Growth and Opportunity Act (USA)",
+  "AI": "Artificial Intelligence",
+  "AIIB": "Asian Infrastructure Investment Bank",
+  "AMI": "Advanced Metering Infrastructure",
+  "ANC": "African National Congress",
+  "ANEEL": "Agencia Nacional de Energia Eletrica",
+  "ANP": "Agencia Nacional do Petroleo, Gas Natural e Biocombustiveis",
+  "AWS": "Amazon Web Services",
+  "AfCFTA": "African Continental Free Trade Area",
+  "BESS": "Battery Energy Storage System",
+  "BMS": "Battery Management System",
+  "BNDES": "Banco Nacional de Desenvolvimento Economico e Social",
+  "BRICS": "Brazil, Russia, India, China, South Africa",
+  "BoP": "Balance of Plant",
+  "BoS": "Balance-of-System",
+  "CAGR": "Compound Annual Growth Rate",
+  "CAM": "Cathode Active Material",
+  "CAPEX": "Capital Expenditure",
+  "CATL": "Contemporary Amperex Technology Co. Limited (China)",
+  "CBAM": "Carbon Border Adjustment Mechanism",
+  "CBERS": "China-Brazil Earth Resources Satellite",
+  "CGEE": "Centro de Gestao e Estudos Estrategicos",
+  "CIF": "Climate Investment Funds",
+  "CIM": "Comite Interministerial sobre Mudanca do Clima",
+  "CIPC": "Companies and Intellectual Property Commission (South Africa)",
+  "CNDI": "Conselho Nacional de Desenvolvimento Industrial",
+  "CNI": "Confederacao Nacional da Industria",
+  "CNPE": "Conselho Nacional de Politica Energetica",
+  "CNPq": "Conselho Nacional de Desenvolvimento Cientifico e Tecnologico",
+  "COP": "Conference of the Parties",
+  "CdTe": "Cadmium Telluride (thin-film PV)",
+  "CertifHy": "European Green Hydrogen Certification Scheme",
+  "DBSA": "Development Bank of Southern Africa",
+  "DC": "Direct Current",
+  "DERMS": "Distributed Energy Resource Management System",
+  "DETER": "Real-Time Deforestation Detection System",
+  "DFFE": "Department of Forestry, Fisheries and the Environment (South Africa)",
+  "DFI": "Development Finance Institution",
+  "DMRE": "Department of Mineral Resources and Energy (South Africa)",
+  "DPL": "Development Policy Loan (World Bank)",
+  "DRI": "Direct Reduced Iron",
+  "E-GMP": "Electric-Global Modular Platform (Hyundai)",
+  "EAF": "Electric Arc Furnace",
+  "EMBRAPII": "Empresa Brasileira de Pesquisa e Inovacao Industrial",
+  "EMS": "Energy Management System",
+  "ENDI": "Estrategia Nacional de Descarbonizacao Industrial",
+  "EPC": "Engineering, Procurement and Construction",
+  "EPE": "Empresa de Pesquisa Energetica",
+  "EPO": "European Patent Office",
+  "ERA": "Electricity Regulation Amendment Act (South Africa, 2024)",
+  "ESG": "Environmental, Social & Governance",
+  "EU": "European Union",
+  "EV": "Electric Vehicle",
+  "EVA": "Ethylene-Vinyl Acetate (encapsulant)",
+  "EVSE": "Electric Vehicle Supply Equipment (charging hardware)",
+  "Eskom": "South African public electric utility",
+  "FACTS": "Flexible AC Transmission System",
+  "FAPESP": "Fundacao de Amparo a Pesquisa do Estado de Sao Paulo",
+  "FC": "Fuel Cell",
+  "FDI": "Foreign Direct Investment",
+  "FINEP": "Financiadora de Estudos e Projetos",
+  "FNDIT": "Fundo Nacional de Desenvolvimento Industrial e Tecnologico",
+  "FOCAC": "Forum on China-Africa Cooperation",
+  "FRAND": "Fair, Reasonable and Non-Discriminatory",
+  "FTA": "Free Trade Agreement",
+  "FX": "Foreign Exchange",
+  "GCF": "Green Climate Fund",
+  "GDP": "Gross Domestic Product",
+  "GFANZ": "Glasgow Financial Alliance for Net Zero",
+  "GHG": "Greenhouse Gas",
+  "GII": "Global Innovation Index",
+  "GIZ": "Deutsche Gesellschaft fur Internationale Zusammenarbeit",
+  "GVA": "Gross Value Added",
+  "GW": "Gigawatt",
+  "GWh": "Gigawatt-hour",
+  "GaN": "Gallium Nitride (wide-bandgap semiconductor)",
+  "H2": "Hydrogen",
+  "HBI": "Hot Briquetted Iron",
+  "HJT": "Heterojunction Technology (solar cell)",
+  "HSRM": "Hydrogen Society Roadmap (South Africa)",
+  "HYBRIT": "Hydrogen Breakthrough Ironmaking Technology",
+  "HySA": "Hydrogen South Africa (national R&D programme)",
+  "IBAMA": "Instituto Brasileiro do Meio Ambiente e dos Recursos Naturais Renovaveis",
+  "IBC": "Interdigitated Back Contact (solar cell)",
+  "IBGE": "Instituto Brasileiro de Geografia e Estatistica",
+  "ICE": "Internal Combustion Engine",
+  "IDB": "Inter-American Development Bank",
+  "IDC": "Industrial Development Corporation (South Africa)",
+  "IEA": "International Energy Agency",
+  "INEP": "Integrated National Electrification Programme",
+  "INPE": "Instituto Nacional de Pesquisas Espaciais",
+  "INPI": "Instituto Nacional da Propriedade Industrial",
+  "IP": "Intellectual Property",
+  "IPAB": "Intellectual Property Amendment Bill",
+  "IPG": "International Partners Group (JETP)",
+  "IPI": "Imposto sobre Produtos Industrializados",
+  "IPP": "Independent Power Producer",
+  "IPR": "Intellectual Property Regimes",
+  "IRENA": "International Renewable Energy Agency",
+  "IRP": "Integrated Resource Plan",
+  "IRR": "Internal Rate of Return",
+  "IoT": "Internet of Things",
+  "Ir": "Iridium (PGM)",
+  "JET-IP": "Just Energy Transition Investment Plan",
+  "JETP": "Just Energy Transition Partnership",
+  "JICA": "Japan International Cooperation Agency",
+  "KfW": "Kreditanstalt fur Wiederaufbau (Germany)",
+  "LCA": "Life Cycle Assessment",
+  "LCOE": "Levelized Cost of Energy",
+  "LFP": "Lithium Iron Phosphate (battery chemistry)",
+  "LSF": "Localisation Support Fund (South Africa)",
+  "Li-ion": "Lithium-ion",
+  "LiPF6": "Lithium Hexafluorophosphate (electrolyte salt)",
+  "MCTI": "Ministerio da Ciencia, Tecnologia e Inovacao",
+  "MDIC": "Ministerio do Desenvolvimento, Industria, Comercio e Servicos",
+  "MEA": "Membrane Electrode Assembly",
+  "MERCOSUR": "Mercado Comum do Sul",
+  "MIDREX": "MIDREX Technologies (DRI Process)",
+  "ML": "Machine Learning",
+  "MMA": "Ministerio do Meio Ambiente e Mudanca do Clima",
+  "MME": "Ministerio de Minas e Energia",
+  "MOSFET": "Metal-Oxide-Semiconductor Field-Effect Transistor",
+  "MOVER": "Lei 14.902/2024 (EV Tax Credits)",
+  "MRV": "Measurement, Reporting and Verification",
+  "MW": "Megawatt",
+  "Mn": "Manganese",
+  "NDB": "New Development Bank (BRICS)",
+  "NDC": "Nationally Determined Contribution",
+  "NERSA": "National Energy Regulator of South Africa",
+  "NEV": "New Energy Vehicle",
+  "NIB": "Nova Industria Brasil",
+  "NMC": "Nickel Manganese Cobalt (battery chemistry)",
+  "NdFeB": "Neodymium-Iron-Boron (rare-earth permanent magnet)",
+  "O&M": "Operations and Maintenance",
+  "OBC": "On-Board Charger",
+  "ODA": "Official Development Assistance",
+  "OEM": "Original Equipment Manufacturer",
+  "OPEX": "Operating Expenditure",
+  "PBIA": "Programa Brasil da Inovacao em IA",
+  "PCC": "Presidential Climate Commission (South Africa)",
+  "PCT": "Patent Cooperation Treaty",
+  "PEM": "Proton Exchange Membrane",
+  "PERC": "Passivated Emitter and Rear Cell (solar cell)",
+  "PGM": "Platinum Group Metals",
+  "PHBC": "Programa Hidrogenio Brasil Competitivo (Lei 14.990/2024)",
+  "PIC": "Public Investment Corporation (South Africa)",
+  "PMU": "Phasor Measurement Unit",
+  "PNE": "Plano Nacional de Energia",
+  "POE": "Polyolefin Elastomer (encapsulant)",
+  "PPP": "Public-Private Partnership",
+  "PV": "Photovoltaic",
+  "Pt": "Platinum (PGM)",
+  "R&D": "Research and Development",
+  "RE": "Renewable Energy",
+  "REIPPPP": "Renewable Energy Independent Power Producer Procurement Programme (SA)",
+  "Rehidro": "Regime Especial de Incentivos para a Producao de Hidrogenio de Baixa Emissao de Carbono",
+  "ResponsibleSteel": "Global Steel Industry Sustainability Certification Standard",
+  "SA": "South Africa",
+  "SA-H2 Fund": "South Africa Hydrogen Fund",
+  "SAAM": "South African Automotive Masterplan",
+  "SABS": "South African Bureau of Standards",
+  "SAEF": "South African Energy Fund",
+  "SAF": "Sustainable Aviation Fuel",
+  "SAIMM": "Southern African Institute of Mining and Metallurgy",
+  "SANEDI": "South African National Energy Development Institute",
+  "SARB": "South African Reserve Bank",
+  "SAREM": "South African Renewable Energy Masterplan",
+  "SARS": "South African Revenue Service",
+  "SASGI": "South African Smart Grid Initiative",
+  "SBCE": "Sistema Brasileiro de Contabilizacao de Emissoes (Lei 15.042/2024)",
+  "SBTi": "Science-Based Targets initiative",
+  "SCADA": "Supervisory Control and Data Acquisition",
+  "SDG": "Sustainable Development Goal",
+  "SEFA": "Small Enterprise Finance Agency (South Africa)",
+  "SENAI": "Servico Nacional de Aprendizagem Industrial",
+  "SEP": "Standard Essential Patent",
+  "SEZ": "Special Economic Zone",
+  "SME": "Small and Medium Enterprise",
+  "SOE": "State-Owned Enterprise",
+  "SOEC": "Solid Oxide Electrolyser Cell",
+  "SSC": "South-South Cooperation",
+  "STATCOM": "Static Synchronous Compensator",
+  "SiC": "Silicon Carbide (wide-bandgap semiconductor)",
+  "TDCA": "Trade, Development and Cooperation Agreement (EU-SA)",
+  "TOPCon": "Tunnel Oxide Passivated Contact (solar cell)",
+  "TRIMs": "Trade-Related Investment Measures",
+  "TRIPS": "Trade-Related Aspects of Intellectual Property Rights (WTO Agreement)",
+  "TRL": "Technology Readiness Level",
+  "UK": "United Kingdom",
+  "UNCTAD": "United Nations Conference on Trade and Development",
+  "UNFCCC": "United Nations Framework Convention on Climate Change",
+  "UNIDO": "United Nations Industrial Development Organization",
+  "USA": "United States of America",
+  "USAID": "United States Agency for International Development",
+  "USD": "United States Dollar",
+  "USPTO": "United States Patent and Trademark Office",
+  "V": "Vanadium",
+  "V2G": "Vehicle-to-Grid",
+  "VCU": "Vehicle Control Unit",
+  "VPP": "Virtual Power Plant",
+  "VRFB": "Vanadium Redox Flow Battery",
+  "WACC": "Weighted Average Cost of Capital",
+  "WIPO": "World Intellectual Property Organization",
+  "WTO": "World Trade Organization",
+  "YSZ": "Yttria-Stabilized Zirconia",
+  "ZAR": "South African Rand",
+  "ZrO2": "Zirconium Dioxide (separator diaphragm material)",
+  "c-Si": "Crystalline Silicon",
+  "dtic": "Department of Trade, Industry and Competition (South Africa)",
+  "e-axle": "Electric axle (integrated drive unit)",
+};
+
+const ABBR_KEYS = Object.keys(ABBR).sort((a,b)=>b.length-a.length);
+const ABBR_RE = new RegExp('(?<![\\w&])(' + ABBR_KEYS.map(k=>k.replace(/[.*+?^${}()|[\]\\\\]/g,'\\$&')).join('|') + ')(?![\\w&])','g');
+
+const T = ({c}) => ABBR[c] ? <span data-tip={ABBR[c]}>{c}</span> : <span>{c}</span>;
+const TipText = ({children}) => {
+  if (typeof children !== "string") return children;
+  const parts = []; let last = 0; let m;
+  ABBR_RE.lastIndex = 0;
+  while ((m = ABBR_RE.exec(children)) !== null) {
+    if (m.index > last) parts.push(children.slice(last, m.index));
+    parts.push(<span key={parts.length} data-tip={ABBR[m[1]]}>{m[1]}</span>);
+    last = m.index + m[1].length;
+  }
+  if (last < children.length) parts.push(children.slice(last));
+  return <>{parts}</>;
+};
+
+const FLAGS = {Brazil:"\uD83C\uDDE7\uD83C\uDDF7",China:"\uD83C\uDDE8\uD83C\uDDF3",USA:"\uD83C\uDDFA\uD83C\uDDF8",Japan:"\uD83C\uDDEF\uD83C\uDDF5",Germany:"\uD83C\uDDE9\uD83C\uDDEA","S. Korea":"\uD83C\uDDF0\uD83C\uDDF7",Denmark:"\uD83C\uDDE9\uD83C\uDDF0",France:"\uD83C\uDDEB\uD83C\uDDF7",UK:"\uD83C\uDDEC\uD83C\uDDE7",Spain:"\uD83C\uDDEA\uD83C\uDDF8",Norway:"\uD83C\uDDF3\uD83C\uDDF4",Switzerland:"\uD83C\uDDE8\uD83C\uDDED",Australia:"\uD83C\uDDE6\uD83C\uDDFA",Canada:"\uD83C\uDDE8\uD83C\uDDE6",Italy:"\uD83C\uDDEE\uD83C\uDDF9",Sweden:"\uD83C\uDDF8\uD83C\uDDEA",Belgium:"\uD83C\uDDE7\uD83C\uDDEA",Chile:"\uD83C\uDDE8\uD83C\uDDF1","South Africa":"\uD83C\uDDFF\uD83C\uDDE6",India:"\uD83C\uDDEE\uD83C\uDDF3",Europe:"\uD83C\uDDEA\uD83C\uDDFA",Various:"\uD83C\uDF10",Other:"\uD83C\uDF10"};
+const flag = c => FLAGS[c] || "\uD83C\uDF10";
+
+const PATENT_COLORS = {China:"#DC2626",USA:"#2563EB",Japan:"#DE3831",Germany:"#7C3AED","S. Korea":"#D97706",Denmark:"#06B6D4",France:"#1E40AF",UK:"#1E3A5F",Spain:"#B91C1C",Norway:"#0E7490",Switzerland:"#059669",Brazil:"#16A34A",Australia:"#EA580C",Canada:"#DC2626",Italy:"#15803D",Sweden:"#1D4ED8",Belgium:"#92400E",Chile:"#7F1D1D","South Africa":"#047857",Europe:"#6366F1",Other:"#94A3B8"};
+
+const TYPE_COLORS = {
+  concessional:{bg:"#DBEAFE", border:"#2563EB", label:"Concessional"},
+  blended:{bg:"#D1FAE5", border:"#059669", label:"Blended"},
+  fiscal:{bg:"#FED7AA", border:"#EA580C", label:"Fiscal"},
+  procurement:{bg:"#FEF3C7", border:"#D97706", label:"Procurement"},
+  grants:{bg:"#E9D5FF", border:"#7C3AED", label:"Grants"},
+};
+
+const intensityColor = (l)=>({
+  "Very High":{bg:"#FEE2E2",fg:"#991B1B"},
+  "High":{bg:"#FEF3C7",fg:"#92400E"},
+  "Medium":{bg:"#FEF9C3",fg:"#854D0E"},
+  "Low":{bg:"#D1FAE5",fg:"#065F46"},
+}[l]||{bg:"#F3F4F6",fg:"#374151"});
+const statusColor = (s)=>({
+  "Strong":{bg:"#D1FAE5",fg:"#065F46"},
+  "Asset":{bg:"#A7F3D0",fg:"#064E3B"},
+  "Emerging":{bg:"#DBEAFE",fg:"#1E40AF"},
+  "Partial":{bg:"#FEF3C7",fg:"#854D0E"},
+  "Nascent":{bg:"#FED7AA",fg:"#9A3412"},
+  "Absent":{bg:"#FECACA",fg:"#7F1D1D"},
+  "Gap":{bg:"#FECACA",fg:"#7F1D1D"},
+}[s]||{bg:"#F3F4F6",fg:"#374151"});
+const StatusBadge = ({status})=> { const c=statusColor(status); return <span style={{fontSize:11,fontWeight:700,padding:"3px 9px",borderRadius:999,background:c.bg,color:c.fg}}>{status}</span>;};
+const IntensityBadge = ({label,level})=> { const c=intensityColor(level); return <span style={{fontSize:11,fontWeight:600,padding:"4px 10px",borderRadius:4,background:c.bg,color:c.fg}}>{label}: {level}</span>;};
+
+
+const COUNTRY_THEMES = {
+  br: {name:"Brazil", flag:"\uD83C\uDDE7\uD83C\uDDF7", header:"#14532D", accent:"#A7F3D0", patentShare:"<2%"},
+  sa: {name:"South Africa", flag:"\uD83C\uDDFF\uD83C\uDDE6", header:"#064E3B", accent:"#A7F3D0", patentShare:"<1%"},
+};
+
+const BR_SECTORS = [
+  { id:"solar", name:"Solar PV", color:"#F59E0B",
+    summary:"Brazil is the 5th-largest solar market globally (48.5 GW installed) yet participates only in the final, lowest-value segments of the chain. Upstream capacity is absent; WEG produces SiC MOSFET inverters as the principal midstream capability.",
+    status:"Partial",
+    patentBar:{China:82,USA:5,Germany:4,Japan:3,"S. Korea":3,Other:3},
+    patentNote:"China controls >80% polysilicon, 96% wafers. TOPCon patents concentrated in LONGi, Tongwei.",
+    targets:"Integrated Resource Plan (PNE 2050): 50 GW by 2030. No manufacturing targets announced.",
+    stages:[
+      { name:"Upstream", borderColor:"#7C3AED",
+        techs:["Solar-grade polysilicon","Ingot growing","Wafer slicing","N-type cells (TOPCon, HJT, IBC)"],
+        patentIntensity:"Very High", secretIntensity:"Very High",
+        structuralControl:"Vertical integration — LONGi, Tongwei control polysilicon-to-module chain",
+        holders:[{company:"LONGi",country:"China",detail:"3,166+ patents, 200 GW TOPCon capacity"},{company:"Tongwei",country:"China",detail:"Leading polysilicon and cell producer"},{company:"JA Solar",country:"China",detail:"Top-3 global cell/module"},{company:"Trina Solar",country:"China",detail:"TOPCon pioneer"},{company:"JinkoSolar",country:"China",detail:"World's largest module shipper"},{company:"First Solar",country:"USA",detail:"CdTe thin-film alternative"},{company:"Wacker Chemie",country:"Germany",detail:"Major polysilicon producer"}],
+        domPosition:"Absent", domAssets:"None. No manufacturing planned.", domPatent:null,
+        trend:"China share grew from ~50% to >80% (2015-2024). TOPCon displacing PERC.",
+        target:"No manufacturing target. Import-dependent."
+      },
+      { name:"Midstream", borderColor:"#2563EB",
+        techs:["Module assembly","Inverter manufacturing","Encapsulants (EVA/POE)","Backsheet","Solar glass"],
+        patentIntensity:"High", secretIntensity:"Medium",
+        structuralControl:"Inverter market more contestable than cells",
+        holders:[{company:"SMA Solar",country:"Germany",detail:"Leading inverter manufacturer"},{company:"Huawei Digital Power",country:"China",detail:"Major string inverter supplier"},{company:"Sungrow",country:"China",detail:"Leading inverter and BESS supplier"},{company:"WEG",country:"Brazil",detail:"SiC MOSFET inverters (SIW500H/SIW750)"}],
+        domPosition:"Emerging → Partial",
+        domAssets:"WEG SIW500H/SIW750 inverters with SiC MOSFET. BYD Camacari module assembly (planned 2026-27).",
+        domPatent:"BR112018006287B1 (Huawei inverter). WEG holds domestic INPI patents.",
+        trend:"Inverter tech shifting to SiC/GaN power electronics.",
+        target:"BYD Camacari: 5 GW module assembly by 2027."
+      },
+      { name:"Downstream", borderColor:"#059669",
+        techs:["Balance-of-System (BoS)","EPC","O&M","Monitoring software","Recycling"],
+        patentIntensity:"Low", secretIntensity:"Low",
+        structuralControl:"Mature competitive market",
+        holders:[{company:"Various local EPC firms",country:"Brazil",detail:"Mature deployment ecosystem"},{company:"WEG",country:"Brazil",detail:"Expanding BoS production"}],
+        domPosition:"Strong", domAssets:"48.5 GW installed, 5th globally. Mature EPC. WEG expanding BoS.",
+        domPatent:null, trend:null,
+        target:"PNE 2050: 50 GW installed by 2030; 135 GW by 2050."
+      }
+    ]
+  },
+  { id:"wind", name:"Wind Energy", color:"#06B6D4",
+    summary:"Brazil's wind sector is the most mature onshore deployment ecosystem (33.7 GW, 5th globally), with sharp technological asymmetry. Vestas and Siemens Gamesa operate local assembly (~80% local content at assembly level); core components remain imported. 189 GW offshore pipeline awaits IBAMA review.",
+    status:"Partial",
+    patentBar:{Denmark:28,China:22,Germany:18,USA:15,Spain:8,Other:9},
+    patentNote:"GE vs Siemens Gamesa patent disputes created cross-licensing oligopoly",
+    targets:"PNE 2050: 40 GW onshore + offshore framework under development.",
+    stages:[
+      { name:"Upstream", borderColor:"#7C3AED",
+        techs:["Advanced composites","NdFeB rare earth magnets","Gearboxes","Blade aerodynamics","Control systems"],
+        patentIntensity:"Very High", secretIntensity:"Very High",
+        structuralControl:"Cross-licensing oligopoly: GE vs Siemens Gamesa; ZF gearbox near-monopoly; China 90% rare earth",
+        holders:[{company:"Vestas",country:"Denmark",detail:"~34% market ex-China"},{company:"Siemens Gamesa",country:"Spain",detail:"Offshore and onshore; patent disputant"},{company:"GE Vernova",country:"USA",detail:"Haliade-X offshore turbine"},{company:"Goldwind",country:"China",detail:"Largest Chinese OEM; direct-drive"},{company:"Envision",country:"China",detail:"Expanding globally"},{company:"Enercon",country:"Germany",detail:"Gearless direct-drive pioneer"},{company:"Flender/Siemens",country:"Germany",detail:"Gearbox near-monopoly"}],
+        domPosition:"Absent", domAssets:"None upstream. Monazite reserves untapped.", domPatent:null,
+        trend:"GE-Siemens Gamesa cross-licensing locked market. Chinese OEMs expanding globally.",
+        target:"No upstream target. Rare earth strategy under MDIC consideration."
+      },
+      { name:"Midstream", borderColor:"#2563EB",
+        techs:["Nacelle assembly","Blade production","Generator/drivetrain","Tower fabrication","Power converters"],
+        patentIntensity:"High", secretIntensity:"High",
+        structuralControl:"OEMs vertically integrated; local assembly possible",
+        holders:[{company:"Vestas Brasil",country:"Brazil",detail:"Blade/nacelle local assembly"},{company:"Siemens Gamesa Brasil",country:"Brazil",detail:"Local assembly operations"},{company:"TPI Composites",country:"USA",detail:"Third-party blade manufacturer"}],
+        domPosition:"Partial",
+        domAssets:"Vestas and Siemens Gamesa local assembly; WEG expanding. ~80% local content at assembly level.",
+        domPatent:"BR112021022338A2 (Siemens Gamesa)",
+        trend:"Vestas and Siemens Gamesa operate local assembly — licence terms not public.",
+        target:"BNDES FINAME local content requirement (~80%) preserved."
+      },
+      { name:"Downstream", borderColor:"#059669",
+        techs:["EPC","Grid connection","O&M","Repowering","Offshore: monopiles, subsea cables"],
+        patentIntensity:"Low", secretIntensity:"Medium",
+        structuralControl:"O&M vendor lock-in via proprietary monitoring",
+        holders:[{company:"Local EPC firms",country:"Brazil",detail:"Mature onshore EPC"},{company:"ABEEOLICA members",country:"Brazil",detail:"Trade body and technical expertise"}],
+        domPosition:"Strong (onshore); Absent (offshore)",
+        domAssets:"33.7 GW onshore (5th globally). 189 GW offshore pipeline under IBAMA review.",
+        domPatent:null, trend:"40 GW target by 2030. Offshore framework under development.",
+        target:"PNE 2050: 40 GW onshore by 2030. Offshore first auction target: 2028."
+      }
+    ]
+  },
+  { id:"steel", name:"Green Steel / H2-DRI", color:"#6366F1",
+    summary:"Brazil has established EAF capacity (24% of steelmaking) and world-leading iron ore pelletisation via Vale. Gerdau achieves 0.93 tCO2/t — among the lowest globally. Yet H2-DRI technology and green steel certification remain nascent.",
+    status:"Partial",
+    patentBar:{China:39,USA:31,Europe:16,Sweden:5,Italy:5,Other:4},
+    patentNote:"612 H2-DRI patents filed 2010-2024; MIDREX controls ~60% global DRI market",
+    targets:"ENDI: 50% EAF share in steelmaking by 2035; SBCE MRV operational 2026.",
+    stages:[
+      { name:"Upstream", borderColor:"#7C3AED",
+        techs:["H2-DRI (MIDREX shaft furnace, Tenova EnergIron)","Electrolyser manufacturing","Green H2 at scale","Catalysts/membranes"],
+        patentIntensity:"Very High", secretIntensity:"Very High",
+        structuralControl:"MIDREX ~60% DRI market via proprietary shaft furnace — standards-based lock-in",
+        holders:[{company:"MIDREX Technologies",country:"USA",detail:"~60% global DRI market"},{company:"Tenova/Danieli",country:"Italy",detail:"EnergIron H2-DRI process"},{company:"thyssenkrupp",country:"Germany",detail:"Steel decarbonisation and H2 integration"},{company:"SSAB",country:"Sweden",detail:"HYBRIT green steel pioneer"},{company:"Siemens Energy",country:"Germany",detail:"Electrolysis systems"},{company:"LONGi Hydrogen",country:"China",detail:"3.5 GW alkaline electrolyser capacity"}],
+        domPosition:"Absent → Emerging", domAssets:"None in electrolyser manufacturing. <10 Brazilian H2-DRI patents.",
+        domPatent:null, trend:"612 patents 2010-2024. Commercial H2-DRI not viable before 2030.",
+        target:"Pecem H2-DRI hub target 2030."
+      },
+      { name:"Midstream", borderColor:"#2563EB",
+        techs:["EAF steelmaking","HBI production","Iron ore pelletisation","Process control","Pellet logistics"],
+        patentIntensity:"Medium", secretIntensity:"High",
+        structuralControl:"EAF more mature/competitive; trade secrets in process optimisation",
+        holders:[{company:"Primetals Technologies",country:"Austria",detail:"EAF and steelmaking equipment"},{company:"Danieli",country:"Italy",detail:"EAF steelmaking technology"},{company:"SMS Group",country:"Germany",detail:"Steel mill equipment"},{company:"Vale",country:"Brazil",detail:"World-leading pellet production, Tubarao Complex"},{company:"Gerdau",country:"Brazil",detail:"0.93 tCO2/t EAF — among lowest globally"}],
+        domPosition:"Partial → Strong",
+        domAssets:"Vale (world-leading pellets). Gerdau (0.93 tCO2/t EAF). 24% EAF share. 50% EAF target by 2035.",
+        domPatent:null, trend:null,
+        target:"ENDI: 50% EAF share by 2035."
+      },
+      { name:"Downstream", borderColor:"#059669",
+        techs:["Green steel certification","CBAM compliance","MRV","LCA","Export logistics"],
+        patentIntensity:"Low", secretIntensity:"Low",
+        structuralControl:"Standards-based: ResponsibleSteel, EU CBAM compliance",
+        holders:[{company:"ResponsibleSteel",country:"Global",detail:"Steel certification standard"},{company:"SAP",country:"Germany",detail:"Enterprise MRV and compliance"},{company:"ABNT",country:"Brazil",detail:"Brazilian standards development"}],
+        domPosition:"Emerging",
+        domAssets:"SBCE under development (Lei 15.042/2024). ABNT standards. SBCE target 2026, no certification yet.",
+        domPatent:null, trend:null,
+        target:"SBCE MRV operational 2026; first regulated trading 2029."
+      }
+    ]
+  },
+  { id:"hydrogen", name:"Low-Carbon Hydrogen", color:"#10B981",
+    summary:"Brazil has zero domestic electrolyser manufacturing. The sole operational deployment is Unigel Camacari (3×20MW thyssenkrupp nucera alkaline, 10,000 t/yr H2, 60,000 t/yr NH3). Nafion membrane monopoly (DuPont/Chemours) is a critical bottleneck.",
+    status:"Emerging",
+    patentBar:{Germany:22,USA:18,Japan:15,China:12,UK:10,Norway:8,France:8,Other:7},
+    patentNote:"PEM filings grew 18%/yr since 2005; Nafion membrane (DuPont/Chemours) is critical bottleneck",
+    targets:"PHBC (Lei 14.990/2024): R$18.3bn tax credits from 2028; 1 GW electrolyser target 2030.",
+    stages:[
+      { name:"Upstream", borderColor:"#7C3AED",
+        techs:["PEM & alkaline electrolysers","SOEC","Catalyst/membrane production","High-pressure compression","Water treatment"],
+        patentIntensity:"Very High", secretIntensity:"Very High",
+        structuralControl:"Nafion membrane monopoly — DuPont/Chemours. Terawatt-scale Ir constraints.",
+        holders:[{company:"Nel ASA",country:"Norway",detail:"PEM and alkaline electrolysers"},{company:"ITM Power",country:"UK",detail:"PEM electrolyser specialist"},{company:"Siemens Energy",country:"Germany",detail:"Silyzer PEM electrolysis"},{company:"thyssenkrupp nucera",country:"Germany",detail:"Alkaline electrolysers; supplied Unigel"},{company:"LONGi Hydrogen",country:"China",detail:"3.5 GW manufacturing capacity"},{company:"DuPont/Chemours",country:"USA",detail:"Nafion PEM membrane monopoly"}],
+        domPosition:"Absent → Emerging", domAssets:"Zero domestic electrolyser manufacturing.",
+        domPatent:"BR0211694A (electrolysis-related, older filing)",
+        trend:"PEM filings +18%/yr since 2005.",
+        target:"1 GW electrolyser target by 2030 (PHBC)."
+      },
+      { name:"Midstream", borderColor:"#2563EB",
+        techs:["Electrolyser stacks","BoP","Compressors","Purification","H2 storage","NH3 synthesis","Industrial integration"],
+        patentIntensity:"High", secretIntensity:"High",
+        structuralControl:"Electrolyser mfg concentrated ~10 firms. Linde Ionic Compressor proprietary. Haldor Topsoe catalysts.",
+        holders:[{company:"Linde",country:"Germany",detail:"Ionic Compressor; cryogenic storage"},{company:"Air Liquide",country:"France",detail:"H2 infrastructure"},{company:"Haldor Topsoe",country:"Denmark",detail:"KM1/KM111 catalysts; majority of world's NH3 converters"},{company:"Petrobras",country:"Brazil",detail:"Refinery/fertiliser infrastructure"},{company:"Unigel",country:"Brazil",detail:"Operational: 3×20MW thyssenkrupp nucera alkaline"}],
+        domPosition:"Partial",
+        domAssets:"Unigel Camacari. Petrobras. Pecem hub (World Bank USD 135M).",
+        domPatent:null, trend:"thyssenkrupp nucera supplied Unigel — terms not public.",
+        target:"500,000 t/yr green H2 by 2030 (PHBC-linked)."
+      },
+      { name:"Downstream", borderColor:"#059669",
+        techs:["Certification/guarantee-of-origin","Export terminals","Fuelling stations","Industrial decarb","Grid blending"],
+        patentIntensity:"Medium", secretIntensity:"Medium",
+        structuralControl:"Certification (CertifHy) as standards-based control",
+        holders:[{company:"CertifHy/TUV SUD",country:"EU",detail:"H2 certification standard"},{company:"Port engineering firms",country:"Various",detail:"Liquefaction and export terminals"}],
+        domPosition:"Emerging → Partial",
+        domAssets:"BNDES financing. PHBC tax credits from 2028. Lei 14.948/2024 certification pending. Pecem, Suape, Acu hubs.",
+        domPatent:null, trend:null,
+        target:"Pecem, Suape, Acu export hubs operational by 2030."
+      }
+    ]
+  },
+  { id:"ev", name:"EVs & Green Mobility", color:"#EF4444",
+    summary:"Brazil is becoming a significant EV assembly hub while remaining wholly dependent on imported cell technology. BYD Camacari (150K→600K units/yr), Stellantis Bio-Hybrid flex-fuel, and GWM (50K units/yr) represent major assembly investments. MOVER provides R$19.3bn in tax credits.",
+    status:"Partial",
+    patentBar:{China:30,Japan:20,"S. Korea":18,USA:15,Germany:12,Other:5},
+    patentNote:"CATL (43,000+ patents) and BYD dominate; barriers bundled: patents + trade secrets + vendor know-how",
+    targets:"MOVER Lei 14.902/2024: R$19.3bn tax credits (2024-2028); IPI Verde 0% at 83 gCO2/km.",
+    stages:[
+      { name:"Upstream", borderColor:"#7C3AED",
+        techs:["Battery cell mfg (NMC, LFP, solid-state)","BMS","Cathode/anode","Li hydroxide refining","NdFeB magnets","SiC/GaN semiconductors"],
+        patentIntensity:"Very High", secretIntensity:"Very High",
+        structuralControl:"Bundled barriers. CATL vertical integration. SiC fab concentrated.",
+        holders:[{company:"CATL",country:"China",detail:"43,000+ patents total portfolio"},{company:"BYD",country:"China",detail:"Blade Battery LFP; vertically integrated"},{company:"LG Energy Solution",country:"S. Korea",detail:"78,000+ patents"},{company:"Samsung SDI",country:"S. Korea",detail:"NMC and solid-state development"},{company:"Panasonic",country:"Japan",detail:"Cylindrical cell manufacturing"},{company:"Tesla",country:"USA",detail:"Proprietary battery architecture"}],
+        domPosition:"Absent",
+        domAssets:"Sigma Lithium (Grota do Cirilo: 30,000t 2023 → 150,000+ by 2028) — mining only.",
+        domPatent:null, trend:null,
+        target:"No battery cell manufacturing target. Lithium mining expansion via Sigma."
+      },
+      { name:"Midstream", borderColor:"#2563EB",
+        techs:["Pack assembly","Drivetrain (motor, inverter, reducer)","Power electronics","Thermal management","Vehicle control","Bio-Hybrid flex-fuel"],
+        patentIntensity:"High", secretIntensity:"Very High",
+        structuralControl:"BMS software + vehicle control are key trade secrets. OEM platform decisions determine local production.",
+        holders:[{company:"BYD",country:"China",detail:"EV powertrains and hybrid systems"},{company:"Bosch",country:"Germany",detail:"Power electronics and controls"},{company:"ZF Friedrichshafen",country:"Germany",detail:"EV transmissions and drivetrains"},{company:"Nidec",country:"Japan",detail:"Electric motors"},{company:"WEG",country:"Brazil",detail:"Expanding EV motors"},{company:"Stellantis",country:"Italy",detail:"Bio-Hybrid flex-fuel (uniquely Brazilian ethanol-electric)"}],
+        domPosition:"Partial",
+        domAssets:"BYD Camacari (150K→600K units/yr). Stellantis Bio-Hybrid. WEG EV motors. GWM (50K units/yr). MOVER R$19.3bn.",
+        domPatent:"BR112016029845A8 (BYD battery/EV)",
+        trend:"BYD and GWM operating local assembly — licence terms not public.",
+        target:"MOVER target: Brazil as major EV assembly hub by 2028."
+      },
+      { name:"Downstream", borderColor:"#059669",
+        techs:["Assembly","Charging infra (AC, DC)","Battery recycling","Fleet management","Flex-fuel integration"],
+        patentIntensity:"Medium", secretIntensity:"Medium",
+        structuralControl:"Charging infra contestable. V2G and battery swap: NIO patents.",
+        holders:[{company:"ChargePoint",country:"USA",detail:"Leading charging network"},{company:"ABB E-mobility",country:"Switzerland",detail:"DC fast charging"},{company:"Tesla Supercharger",country:"USA",detail:"Proprietary charging network"},{company:"Redwood Materials",country:"USA",detail:"Battery recycling pioneer"},{company:"NIO",country:"China",detail:"Battery swapping patents"}],
+        domPosition:"Partial → Strong",
+        domAssets:"IPI Verde (0% tax at 83 gCO2/km). <10,000 public chargers. Battery recycling target 2028-2030.",
+        domPatent:null, trend:null,
+        target:"Battery recycling framework 2028-2030. Charging infrastructure expansion."
+      }
+    ]
+  },
+  { id:"mrv", name:"Digital MRV & Industrial AI", color:"#8B5CF6",
+    summary:"Enabling infrastructure for all five other sectors. Brazil possesses INPE satellite monitoring (DETER, CBERS, Amazonia-1) as a unique national asset; yet cloud platform dependency (Microsoft/Google/AWS ~65%) is deepening. SBCE framework targets full MRV by 2026.",
+    status:"Emerging",
+    patentBar:{USA:45,Germany:20,China:12,France:8,Japan:8,Other:7},
+    patentNote:"Microsoft, Google, AWS control ~65% cloud platforms; SAP/Oracle dominate enterprise ESG",
+    targets:"SBCE (Lei 15.042/2024) MRV operational 2026. PBIA: R$23bn for AI. 25% industrial firm AI adoption (NIB).",
+    stages:[
+      { name:"Upstream", borderColor:"#7C3AED",
+        techs:["IoT sensors","Edge computing","Emissions monitoring hardware","Satellite/remote sensing (INPE: DETER, CBERS, Amazonia-1)","5G"],
+        patentIntensity:"Medium", secretIntensity:"High",
+        structuralControl:"Hardware: Siemens/Honeywell/ABB dominate. INPE is unique national asset.",
+        holders:[{company:"Siemens",country:"Germany",detail:"Industrial IoT and edge computing"},{company:"Honeywell",country:"USA",detail:"Industrial sensors and controls"},{company:"ABB",country:"Switzerland",detail:"Automation and IoT"},{company:"Schneider Electric",country:"France",detail:"Edge computing"},{company:"INPE",country:"Brazil",detail:"DETER, CBERS, Amazonia-1 satellite systems"}],
+        domPosition:"Partial", domAssets:"INPE satellite systems — unique national asset. Hardware imported.",
+        domPatent:null, trend:null,
+        target:"INPE satellite continuity; Amazonia-2 planned."
+      },
+      { name:"Midstream", borderColor:"#2563EB",
+        techs:["AI/ML platforms","Digital twins","Blockchain carbon tracking","Predictive maintenance","Process optimisation"],
+        patentIntensity:"High", secretIntensity:"Very High",
+        structuralControl:"Platform dependency: Microsoft/Google/AWS ~65% cloud. SAP/Oracle enterprise ESG. Lock-in architectural, not patent-based.",
+        holders:[{company:"Microsoft",country:"USA",detail:"Azure cloud, AI/ML, sustainability"},{company:"Google",country:"USA",detail:"Cloud AI, BigQuery, sustainability"},{company:"SAP",country:"Germany",detail:"ERP, sustainability, digital MRV"},{company:"Oracle",country:"USA",detail:"Cloud infrastructure and ESG"},{company:"Siemens",country:"Germany",detail:"Industrial digital twin platforms"}],
+        domPosition:"Emerging",
+        domAssets:"Brazilian startup ecosystem in carbon tracking/ESG. AI adoption declined 41.9%→38% (2023-24) among large firms.",
+        domPatent:null, trend:"AI smart grid patents grew 6x since 2018. Platform dependency deepening.",
+        target:"PBIA: R$23bn for AI (2024-28). 25% large-firm AI adoption."
+      },
+      { name:"Downstream", borderColor:"#059669",
+        techs:["MRV reporting","CBAM compliance","Carbon credit verification","Scope 1/2/3 tracking","Supply chain transparency"],
+        patentIntensity:"Low", secretIntensity:"Medium",
+        structuralControl:"Regulatory requirements creating market",
+        holders:[{company:"Salesforce",country:"USA",detail:"Sustainability Cloud and ESG"},{company:"SAP",country:"Germany",detail:"Compliance and reporting"},{company:"Climate-tech startups",country:"Brazil",detail:"Consulting and verification services"}],
+        domPosition:"Emerging → Partial",
+        domAssets:"SBCE (Lei 15.042/2024) MRV operational 2026. PBIA: R$23bn for AI.",
+        domPatent:null, trend:null,
+        target:"SBCE MRV operational 2026; 25% industrial firm target (NIB)."
+      }
+    ]
+  }
+];
+const BR_POLICIES = {
+  trade: [
+    { name:"Nova Industria Brasil (NIB)", year:"2024", summary:"Umbrella industrial policy bundling green industrialisation, local content, and technology absorption. Central envelope of R$300bn (2024-2026) channelled via BNDES, FINEP, EMBRAPII. Establishes six missions including sustainable agroindustrial chains and energy transition.", link:"https://www.gov.br/mdic/pt-br/composicao/sei/cndi/nova-industria-brasil" },
+    { name:"MOVER — Lei 14.902/2024", year:"2024", summary:"Green Mobility and Innovation Programme. R$19.3bn tax credits (2024-2028) for EV and low-carbon vehicle manufacturing. Conditions credits on local R&D spend and decarbonisation targets. Replaces and extends Rota 2030.", link:"https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l14902.htm" },
+    { name:"PHBC — Lei 14.990/2024", year:"2024", summary:"Programa Hidrogenio Brasil Competitivo. R$18.3bn in presumed-credit tax incentives for low-carbon hydrogen (2028-2033). Establishes Rehidro special regime and links certification (Lei 14.948/2024) to incentives.", link:"https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l14990.htm" },
+    { name:"Local Content Requirements (BNDES FINAME)", year:"Ongoing", summary:"BNDES equipment financing conditional on local content thresholds — historically ~80% for wind and ~60% for solar midstream. Preserved under NIB and preserved in REIDI and Rehidro.", link:"https://www.bndes.gov.br/wps/portal/site/home/financiamento/produto/finame" },
+    { name:"MERCOSUR-EU FTA (pending ratification)", year:"2024-2025", summary:"Free Trade Agreement agreed in principle December 2024. Tariff schedule relevant for green goods; contains CBAM-adjacent provisions. Ratification pending in several EU member states.", link:"https://policy.trade.ec.europa.eu/eu-trade-relationships-country-and-region/countries-and-regions/mercosur_en" },
+  ],
+  fiscal: [
+    { name:"IPI Verde (Green IPI)", year:"2023-present", summary:"Product tax (IPI) modulated by CO2 emissions per km: 0% rate at 83 gCO2/km benchmark. Bio-Hybrid flex-fuel vehicles benefit given uniquely low ethanol life-cycle emissions. Principal fiscal signal for EV and hybrid adoption.", link:"https://www.gov.br/receitafederal/pt-br" },
+    { name:"Rehidro Special Regime", year:"2024", summary:"Regime Especial de Incentivos para a Producao de Hidrogenio de Baixa Emissao de Carbono (Lei 14.990/2024). Suspends PIS/COFINS on inputs for qualifying H2 projects. Linked to PHBC tax-credit envelope.", link:"https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l14990.htm" },
+    { name:"Fundo Clima (Climate Fund) — BNDES", year:"2024-2025", summary:"R$10.4bn concessional credit line (2024-2025) financing renewable energy, urban mobility, and industrial decarbonisation. Below-market interest rates via BNDES.", link:"https://www.bndes.gov.br/wps/portal/site/home/financiamento/produto/fundo-clima" },
+    { name:"Eco Invest Brasil (FX-hedged)", year:"2024-2028", summary:"R$75bn blended-finance platform (BNDES/Tesouro/IDB). Provides FX-hedged long-tenor credit for green industrial projects. IDB-CB partnership provides USD 3.4bn FX hedging window.", link:"https://www.bndes.gov.br/" },
+    { name:"FINEP Grants & FNDIT", year:"2024-2026", summary:"R$3.3bn in non-reimbursable R&D grants (FINEP) plus R$1bn FNDIT fund. Targets industrial decarbonisation, electrolysers, advanced bioeconomy, and critical minerals.", link:"http://www.finep.gov.br/" },
+    { name:"Chamada de Clima (MCTI)", year:"2024-2027", summary:"R$21.2bn MCTI-FINEP call for climate-related R&D and pilot infrastructure. Reflects the heightened profile of R&D under NIB's climate mission.", link:"http://www.finep.gov.br/" },
+  ],
+  regulatory: [
+    { name:"SBCE — Lei 15.042/2024", year:"2024", summary:"Sistema Brasileiro de Contabilizacao de Emissoes. National cap-and-trade system for regulated sectors. MRV operational target 2026; first regulated trading 2029. Aligns with CBAM compliance pathways.", link:"https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l15042.htm" },
+    { name:"ENDI — Estrategia Nacional de Descarbonizacao Industrial", year:"2024", summary:"National Industrial Decarbonisation Strategy. Targets 50% EAF share in steelmaking by 2035; sectoral decarbonisation roadmaps for cement, chemicals, aluminium.", link:"https://www.gov.br/mdic/pt-br" },
+    { name:"PNE 2050 — Plano Nacional de Energia", year:"2020 (rolling)", summary:"Integrated Resource Plan. 50 GW solar and 40 GW wind by 2030; 135 GW solar by 2050. Updated by EPE biennially.", link:"https://www.epe.gov.br/pt/publicacoes-dados-abertos/publicacoes/Plano-Nacional-de-Energia-2050" },
+    { name:"Lei 14.948/2024 — Low-Carbon H2 Certification", year:"2024", summary:"Framework law for low-carbon hydrogen certification (guarantee-of-origin). Regulation pending MME-ANP. Precondition for PHBC incentive access.", link:"https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l14948.htm" },
+    { name:"PBIA — Plano Brasileiro de IA", year:"2024-2028", summary:"Programa Brasil da Inovacao em IA. R$23bn (2024-2028) for AI infrastructure, compute, industrial AI deployment. Targets 25% AI adoption among large industrial firms.", link:"https://www.gov.br/mcti/pt-br/acompanhe-o-mcti/noticias/2024/07/lancado-plano-brasileiro-de-ia-pbia" },
+    { name:"SBCE + Offshore Wind Framework", year:"In preparation", summary:"Offshore wind regulatory framework under IBAMA/MME review (189 GW pipeline). First auction target 2028.", link:"https://www.gov.br/mme/pt-br" },
+  ]
+};
+const BR_FINANCING_INSTRUMENTS = [
+  { name:"NIB Central Envelope", type:"concessional", value:"R$300 bn", period:"2024-2026", sectors:"Cross-cutting", institution:"BNDES / FINEP / EMBRAPII", detail:"Umbrella NIB envelope bundling green industrialisation, local content, technology absorption." },
+  { name:"Fundo Clima", type:"concessional", value:"R$10.4 bn", period:"2024-2025", sectors:"RE, Urban mobility, Industrial decarb", institution:"BNDES", detail:"Concessional credit line with below-market rates." },
+  { name:"Chamada de Clima (MCTI-FINEP)", type:"grants", value:"R$21.2 bn", period:"2024-2027", sectors:"Climate R&D, Pilot infrastructure", institution:"MCTI / FINEP", detail:"Non-reimbursable call for climate R&D." },
+  { name:"Eco Invest Brasil", type:"blended", value:"R$75 bn", period:"2024-2028", sectors:"Green industry", institution:"BNDES / Tesouro / IDB", detail:"FX-hedged blended-finance platform." },
+  { name:"MOVER Tax Credits", type:"fiscal", value:"R$19.3 bn", period:"2024-2028", sectors:"EV, low-carbon vehicles", institution:"Receita Federal / MDIC", detail:"Tax credits conditioned on local R&D and decarbonisation." },
+  { name:"PHBC Tax Credits", type:"fiscal", value:"R$18.3 bn", period:"2028-2033", sectors:"Low-carbon H2", institution:"Receita Federal / MME", detail:"Presumed-credit incentives for low-carbon H2." },
+  { name:"Rehidro (PIS/COFINS suspension)", type:"fiscal", value:"R$20 bn est.", period:"2024-2033", sectors:"Low-carbon H2 inputs", institution:"Receita Federal", detail:"Special regime suspending PIS/COFINS on qualifying H2 inputs." },
+  { name:"FINEP Grants", type:"grants", value:"R$3.3 bn", period:"2024-2026", sectors:"R&D — electrolysers, minerals, bioeconomy", institution:"FINEP", detail:"Non-reimbursable R&D grants." },
+  { name:"FNDIT", type:"grants", value:"R$1 bn", period:"2024-2026", sectors:"Industrial innovation", institution:"FINEP / EMBRAPII", detail:"Industrial innovation fund." },
+  { name:"BNDES Green Bonds", type:"blended", value:"US$2.7 bn", period:"2023-2025", sectors:"RE, Mobility", institution:"BNDES", detail:"International green bond issuance programme." },
+  { name:"GFANZ Platform", type:"blended", value:"Pipeline ongoing", period:"2023-2030", sectors:"Cross-cutting", institution:"GFANZ / COP30 Presidency", detail:"Private climate-finance alliance platform." },
+  { name:"IDB-CB FX Hedging Window", type:"blended", value:"US$3.4 bn", period:"2024-2028", sectors:"Green industry", institution:"IDB / Banco Central", detail:"FX-hedging facility for long-tenor green projects." },
+];
+const BR_FINANCING_TIMELINE = [
+  { year:"2023", value:40, milestone:"NIB launch & BNDES Green Bonds issuance" },
+  { year:"2024", value:90, milestone:"MOVER, PHBC, Lei 14.948 H2 certification, SBCE (Lei 15.042)" },
+  { year:"2025", value:110, milestone:"Peak deployment year — Fundo Clima, Eco Invest, FINEP-Chamada de Clima" },
+  { year:"2026", value:95, milestone:"SBCE MRV operational; NIB mid-term review" },
+  { year:"2027", value:85, milestone:"Chamada de Clima + MOVER extension" },
+  { year:"2028", value:70, milestone:"PHBC tax credits begin; offshore wind first auction; EV recycling framework" },
+  { year:"2029", value:55, milestone:"SBCE first regulated trading; MOVER closes" },
+  { year:"2030", value:45, milestone:"PNE 2050 mid-term: 50 GW solar, 40 GW wind, 1 GW electrolyser" },
+  { year:"2031", value:30, milestone:"Pecem H2-DRI hub target; ENDI industrial review" },
+  { year:"2032", value:20, milestone:"PHBC consolidation" },
+  { year:"2033", value:15, milestone:"PHBC closes" },
+];
+const BR_GOVERNANCE = {
+  apex: { name:"Conselho Nacional de Desenvolvimento Industrial (CNDI)", role:"Political coordination; chairs NIB implementation" },
+  ministries: [
+    { name:"MDIC", role:"Industrial policy; NIB secretariat; MOVER administration" },
+    { name:"Ministerio da Fazenda / Tesouro Nacional", role:"Fiscal envelope; tax expenditure policy; Eco Invest" },
+    { name:"MMA", role:"Climate policy; SBCE administration; NDC reporting" },
+    { name:"MME", role:"Energy policy; PHBC; offshore wind framework; H2 certification" },
+    { name:"MCTI", role:"R&D policy; PBIA; Chamada de Clima" },
+  ],
+  financeHubs: [
+    { name:"BNDES", role:"Primary development finance — NIB, Fundo Clima, Eco Invest, green bonds" },
+    { name:"FINEP", role:"R&D grants; Chamada de Clima; FNDIT" },
+    { name:"EMBRAPII", role:"Industrial innovation partnerships; EMBRAPII-NIB co-financing" },
+  ],
+  regulators: [
+    { name:"ANEEL", role:"Electricity regulation; distributed generation rules" },
+    { name:"ANP", role:"Oil, gas, biofuels; H2 certification regulation" },
+    { name:"CNPE", role:"National Energy Policy Council; sectoral policy coordination" },
+    { name:"CIM", role:"Inter-ministerial climate committee; NDC tracking" },
+    { name:"INPI", role:"Patents; green-tech patent fast-track" },
+    { name:"IBAMA", role:"Environmental licensing; offshore wind review" },
+  ],
+  crosscutting: [
+    { name:"GFANZ / COP30 Presidency", role:"Private climate-finance alliance platform" },
+    { name:"IDB / IDB-CB FX Hedging", role:"Blended-finance FX window" },
+    { name:"World Bank", role:"Pecem H2 hub USD 135M loan" },
+    { name:"NDB (BRICS) & China Development Bank", role:"South-South development finance" },
+  ]
+};
+const BR_REFERENCES = [
+  { category:"Policy & Legislation", refs:[
+    {title:"Nova Industria Brasil (NIB)", detail:"National industrial policy for green industrialisation (2024-2026).", year:"2024", url:"https://www.gov.br/mdic/pt-br/composicao/sei/cndi/nova-industria-brasil"},
+    {title:"MOVER — Lei 14.902/2024", detail:"Green Mobility and Innovation Programme, R$19.3bn EV tax credits.", year:"2024", url:"https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l14902.htm"},
+    {title:"PHBC — Lei 14.990/2024", detail:"Low-carbon H2 programme; R$18.3bn tax credits (2028-2033).", year:"2024", url:"https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l14990.htm"},
+    {title:"SBCE — Lei 15.042/2024", detail:"National cap-and-trade system; MRV 2026, trading 2029.", year:"2024", url:"https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l15042.htm"},
+    {title:"Lei 14.948/2024", detail:"Low-carbon H2 certification framework.", year:"2024", url:"https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l14948.htm"},
+    {title:"PBIA — Plano Brasileiro de IA", detail:"R$23bn AI plan (2024-2028).", year:"2024", url:"https://www.gov.br/mcti/pt-br"},
+  ]},
+  { category:"Patent Examples", refs:[
+    {title:"BR112018006287B1", detail:"Huawei solar inverter patent filed in Brazil.", year:"2018", url:"https://patents.google.com/patent/BR112018006287B1"},
+    {title:"BR112021022338A2", detail:"Siemens Gamesa wind-related patent.", year:"2021", url:"https://patents.google.com/patent/BR112021022338A2"},
+    {title:"BR0211694A", detail:"Electrolysis-related patent (older filing).", year:"2002", url:"https://patents.google.com/patent/BR0211694A"},
+    {title:"BR112016029845A8", detail:"BYD battery/EV patent.", year:"2016", url:"https://patents.google.com/patent/BR112016029845A8"},
+  ]},
+  { category:"International Frameworks", refs:[
+    {title:"WIPO GREEN", detail:"WIPO platform for green tech transfer.", year:"Ongoing", url:"https://www3.wipo.int/wipogreen/en/"},
+    {title:"WTO/TRIPS", detail:"Trade-Related Aspects of Intellectual Property Rights.", year:"1995", url:"https://www.wto.org/english/tratop_e/trips_e/trips_e.htm"},
+    {title:"UNFCCC Technology Mechanism (TEC/CTCN)", detail:"Technology transfer provisions.", year:"1992", url:"https://unfccc.int/ttclear"},
+    {title:"EU CBAM", detail:"Carbon Border Adjustment Mechanism.", year:"2023", url:"https://taxation-customs.ec.europa.eu/carbon-border-adjustment-mechanism_en"},
+    {title:"PCT", detail:"Patent Cooperation Treaty (WIPO).", year:"1970", url:"https://www.wipo.int/pct/en/"},
+  ]},
+  { category:"Industry & Institutions", refs:[
+    {title:"BNDES", detail:"National Development Bank — primary green finance hub.", year:"Ongoing", url:"https://www.bndes.gov.br/"},
+    {title:"FINEP", detail:"Financier of Studies and Projects — R&D grants.", year:"Ongoing", url:"http://www.finep.gov.br/"},
+    {title:"EPE", detail:"Energy Research Enterprise — PNE 2050.", year:"Ongoing", url:"https://www.epe.gov.br/"},
+    {title:"ABEEOLICA", detail:"Brazilian Wind Energy Association.", year:"Ongoing", url:"https://abeeolica.org.br/"},
+    {title:"INPI Brazil", detail:"National Institute of Industrial Property.", year:"Ongoing", url:"https://www.gov.br/inpi/pt-br"},
+  ]},
+  { category:"Global Patent Context", refs:[
+    {title:"Global Green Patent Distribution", detail:"Japan 32%, China 19%, USA 18% of cumulative global green tech patents (WIPO 2024).", year:"2024"},
+    {title:"China Annual Filing", detail:"China's share of recent annual filings exceeds 30%.", year:"2024"},
+    {title:"Brazil Green Patent Share", detail:"Brazil <2% of global green tech patents.", year:"2024"},
+  ]},
+];
+const SA_SECTORS = [
+  { id:"solar", name:"Solar PV", color:"#F59E0B",
+    summary:"South Africa occupies only the final segment of the solar PV value chain — module assembly using entirely imported cells and materials. ARTsolar in Durban is the country's sole PV module manufacturer. No wafer or cell manufacturing capacity exists or is planned. SAREM targets 50% solar localisation by 2030.",
+    status:"Partial",
+    patentBar:{China:82,USA:5,Germany:4,Japan:3,"S. Korea":3,Other:3},
+    patentNote:"China controls >80% of polysilicon, ingot, wafer and cell capacity. TOPCon patents concentrated in LONGi, Tongwei.",
+    targets:"SAREM (March 2025): 50% solar localisation by 2030, 90% BoS localisation, 3-5 GW/yr RE additions, 25,000+ jobs.",
+    stages:[
+      { name:"Upstream", borderColor:"#7C3AED",
+        techs:["Solar-grade polysilicon","Ingot growing (Czochralski)","Wafer slicing","N-type cells (TOPCon, HJT, IBC)","Crucible/saw wire"],
+        patentIntensity:"Very High", secretIntensity:"Very High",
+        structuralControl:"Vertical integration — LONGi, Tongwei, TCL Zhonghuan control full chain. Extreme geographic concentration in China.",
+        holders:[{company:"LONGi",country:"China",detail:"Largest mono-Si wafer producer globally; 3,166+ patents"},{company:"Tongwei",country:"China",detail:"Leading polysilicon & cell manufacturer"},{company:"TCL Zhonghuan",country:"China",detail:"45% wafer share with LONGi"},{company:"GCL-Poly",country:"China",detail:"Granular polysilicon pioneer"},{company:"Wacker Chemie",country:"Germany",detail:"Major European polysilicon producer"},{company:"OCI",country:"S. Korea",detail:"Polysilicon for semiconductor & solar"},{company:"Hemlock",country:"USA",detail:"Major US polysilicon manufacturer"}],
+        domPosition:"Absent", domAssets:"No upstream planned. Entirely import-dependent.", domPatent:null,
+        trend:"China share grew from ~50% to >80% (2015-2024). TOPCon displacing PERC.",
+        target:"No manufacturing target. Import-dependent."
+      },
+      { name:"Midstream", borderColor:"#2563EB",
+        techs:["Cell manufacturing","Module assembly","Inverter mfg","Encapsulants (EVA/POE)","Backsheet","Solar glass","Silver paste"],
+        patentIntensity:"High", secretIntensity:"Medium",
+        structuralControl:"Inverter market more contestable; module assembly is lower-barrier entry point.",
+        holders:[{company:"JA Solar",country:"China",detail:"Top-3 global cell/module manufacturer"},{company:"Trina Solar",country:"China",detail:"TOPCon leader"},{company:"JinkoSolar",country:"China",detail:"World's largest module shipper"},{company:"Hanwha Q Cells",country:"S. Korea",detail:"Q.ANTUM technology"},{company:"Meyer Burger",country:"Switzerland",detail:"HJT specialist"},{company:"First Solar",country:"USA",detail:"CdTe thin-film technology"},{company:"SMA Solar",country:"Germany",detail:"Leading inverter manufacturer"},{company:"Huawei Digital Power",country:"China",detail:"Major string inverter supplier"},{company:"Sungrow",country:"China",detail:"Leading inverter & BESS supplier"}],
+        domPosition:"Absent",
+        domAssets:"Inverter assembly identified as near-term localisation opportunity (SAREM). No cell manufacturing.",
+        domPatent:null,
+        trend:"Inverter tech shifting to SiC/GaN power electronics.",
+        target:"SAREM: inverter assembly localisation pathway. No cell manufacturing target."
+      },
+      { name:"Downstream", borderColor:"#059669",
+        techs:["Module assembly","BoS","EPC","O&M","Monitoring","Recycling (emerging)"],
+        patentIntensity:"Low", secretIntensity:"Low",
+        structuralControl:"Mature competitive market. REIPPPP built local capacity.",
+        holders:[{company:"ARTsolar",country:"South Africa",detail:"SA's sole PV module manufacturer (Durban)"},{company:"Various local EPC firms",country:"South Africa",detail:"Mature EPC ecosystem under REIPPPP"}],
+        domPosition:"Partial",
+        domAssets:"ARTsolar (Durban) — SA's sole PV module manufacturer. Mature EPC ecosystem under REIPPPP (123 projects, ZAR 256bn since 2011).",
+        domPatent:null, trend:null,
+        target:"SAREM: 50% solar localisation and 90% BoS localisation by 2030; 3-5 GW/yr RE additions; 25,000+ jobs."
+      }
+    ]
+  },
+  { id:"wind", name:"Wind Energy", color:"#06B6D4",
+    summary:"South Africa has tower fabrication capability (DCD Wind Towers at Coega) and limited component assembly, but all turbines are imported. Over 45 operational wind facilities exist under REIPPPP. SAREM targets 47% wind localisation by 2030.",
+    status:"Partial",
+    patentBar:{Denmark:28,China:22,Germany:18,USA:15,Spain:8,Other:9},
+    patentNote:"Vestas holds ~34% market outside China; GE vs Siemens Gamesa patent disputes created cross-licensing oligopoly.",
+    targets:"SAREM: 47% wind localisation by 2030; over 45 operational wind facilities under REIPPPP.",
+    stages:[
+      { name:"Upstream", borderColor:"#7C3AED",
+        techs:["Advanced composites","NdFeB magnets","Bearings/gearboxes","Aerodynamic blade design","Control systems","Pitch/yaw mechanisms"],
+        patentIntensity:"Very High", secretIntensity:"Very High",
+        structuralControl:"Cross-licensing oligopoly; ZF gearbox near-monopoly; China ~90% rare earth refining.",
+        holders:[{company:"Vestas",country:"Denmark",detail:"~34% market outside China; largest Western OEM"},{company:"Siemens Gamesa",country:"Spain",detail:"Major offshore & onshore manufacturer"},{company:"GE Vernova",country:"USA",detail:"Haliade-X offshore; major onshore portfolio"},{company:"Nordex",country:"Germany",detail:"Onshore specialist"},{company:"Goldwind",country:"China",detail:"Largest Chinese OEM; PMDD direct-drive"},{company:"Envision",country:"China",detail:"Major Chinese OEM expanding globally"},{company:"Mingyang",country:"China",detail:"Offshore & onshore; international expansion"},{company:"Enercon",country:"Germany",detail:"Gearless direct-drive pioneer"},{company:"Flender/Siemens",country:"Germany",detail:"Leading wind gearbox manufacturer"}],
+        domPosition:"Absent", domAssets:"No rare-earth/composite/precision component manufacturing.", domPatent:null,
+        trend:"GE-Siemens Gamesa cross-licensing locked market. Chinese OEMs expanding globally.",
+        target:"No upstream target."
+      },
+      { name:"Midstream", borderColor:"#2563EB",
+        techs:["Nacelle mfg","Blade production","Generator/drivetrain","Tower fabrication (steel tubular)","Hub/mainframe casting","Power converters"],
+        patentIntensity:"High", secretIntensity:"High",
+        structuralControl:"OEMs vertically integrated; tower fabrication possible with local content requirements.",
+        holders:[{company:"Vestas/Siemens Gamesa",country:"Various",detail:"Vertically integrated nacelle/blade manufacturing"},{company:"TPI Composites",country:"USA",detail:"Independent blade manufacturer"},{company:"DCD Wind Towers",country:"South Africa",detail:"Tower fabrication at Coega SEZ"}],
+        domPosition:"Partial",
+        domAssets:"DCD Wind Towers (Coega SEZ) — SA's principal wind midstream asset. Blade mfg explored but not sustained. Minimum order volumes limit further localisation.",
+        domPatent:null, trend:"Local content preserved via REIPPPP windows.",
+        target:"SAREM: 47% wind localisation by 2030."
+      },
+      { name:"Downstream", borderColor:"#059669",
+        techs:["Foundation engineering","Electrical infrastructure","Grid connection","O&M","Condition monitoring","Repowering"],
+        patentIntensity:"Low", secretIntensity:"Medium",
+        structuralControl:"O&M vendor lock-in via proprietary monitoring systems.",
+        holders:[{company:"Vestas/Siemens Gamesa",country:"Various",detail:"Proprietary O&M contracts"},{company:"Local EPC firms",country:"South Africa",detail:"Foundation & electrical works"}],
+        domPosition:"Partial",
+        domAssets:"Over 45 operational wind facilities under REIPPPP. Mature onshore EPC ecosystem.",
+        domPatent:null, trend:null,
+        target:"SAREM onshore expansion; no offshore framework yet."
+      }
+    ]
+  },
+  { id:"battery", name:"Battery & Energy Storage", color:"#8B5CF6",
+    summary:"South Africa possesses the world's largest manganese reserves and significant vanadium deposits, yet lacks all processing infrastructure. No SABS specifications for Li-ion exist. The LSF/EY-Parthenon study (March 2026) confirmed a 5–10 GWh LFP gigafactory is technically and commercially feasible. Regional demand: 55 GWh by 2034.",
+    status:"Asset / Absent",
+    patentBar:{China:45,"S. Korea":25,Japan:15,USA:8,Germany:3,Other:4},
+    patentNote:"CATL alone holds 43,000+ patents; LG Energy Solution 78,000+ globally.",
+    targets:"SAREM: 60% battery localisation by 2030. LSF/EY-Parthenon (March 2026): 5-10 GWh LFP gigafactory feasible; 560+ direct jobs at 5 GWh scale.",
+    stages:[
+      { name:"Upstream", borderColor:"#7C3AED",
+        techs:["Mining/refining critical minerals (Mn, V, Li, Co, Ni)","CAM production","Anode materials (graphite)","Electrolytes (LiPF6)","Separators","Iron phosphate precursor for LFP"],
+        patentIntensity:"Very High", secretIntensity:"Very High",
+        structuralControl:"CATL/BYD vertical integration. Patent thickets: CATL 43,000+; LG 78,000+. Processing concentrated in China.",
+        holders:[{company:"Albemarle",country:"USA",detail:"Major lithium producer"},{company:"SQM",country:"Chile",detail:"Lithium from brine operations"},{company:"Ganfeng Lithium",country:"China",detail:"Integrated lithium producer"},{company:"Pilbara Minerals",country:"Australia",detail:"Spodumene lithium mining"},{company:"Asahi Kasei",country:"Japan",detail:"Leading separator manufacturer"},{company:"SK IE Technology",country:"S. Korea",detail:"Separator & copper foil"},{company:"Umicore",country:"Belgium",detail:"Cathode materials & recycling"},{company:"BASF",country:"Germany",detail:"Cathode active materials"}],
+        domPosition:"Asset (minerals) / Absent (processing)",
+        domAssets:"World's largest Mn reserves; significant V deposits (VRFB potential). No battery-grade mineral processing. No SABS specs for Li-ion. Lacks lithium — Zimbabwe partnership needed.",
+        domPatent:null,
+        trend:"LFP chemistry displacing NMC in most segments.",
+        target:"No upstream processing target yet. Critical Minerals Strategy beneficiation pathway under dtic."
+      },
+      { name:"Midstream", borderColor:"#2563EB",
+        techs:["Electrode coating/calendering","Cell mfg (LFP, NMC, solid-state)","Cell formation/aging","Module assembly","Advanced mechatronics"],
+        patentIntensity:"Very High", secretIntensity:"Very High",
+        structuralControl:"Cell mfg combines dense patent thickets with trade secrets. BYD Cell-to-Pack. Toyota leading solid-state.",
+        holders:[{company:"CATL",country:"China",detail:"43,000+ patents; Shenxing LFP"},{company:"BYD",country:"China",detail:"Blade Battery; Cell-to-Pack"},{company:"LG Energy Solution",country:"S. Korea",detail:"78,000+ patents globally"},{company:"Samsung SDI",country:"S. Korea",detail:"NMC & solid-state R&D"},{company:"Panasonic",country:"Japan",detail:"Cylindrical cells; Tesla partnership"},{company:"EVE Energy",country:"China",detail:"LFP & cylindrical cell producer"},{company:"Toyota",country:"Japan",detail:"Solid-state battery leader"},{company:"QuantumScape",country:"USA",detail:"Solid-state battery startup"}],
+        domPosition:"Absent → Emerging",
+        domAssets:"LSF/EY-Parthenon feasibility (March 2026): 5-10 GWh LFP gigafactory confirmed feasible. 560+ direct jobs at 5 GWh. 55 GWh regional demand by 2034 (~30% CAGR). LFP price competitiveness under WTO-compliant tariff support.",
+        domPatent:null, trend:"LFP gaining over NMC. Solid-state timeline 2027-2030.",
+        target:"SAREM: 60% battery localisation by 2030. LSF-linked gigafactory pathway."
+      },
+      { name:"Downstream", borderColor:"#059669",
+        techs:["Pack assembly","BMS","Grid-scale BESS","Containerised BESS","Thermal management","Second-life","Recycling","Energy management software"],
+        patentIntensity:"Medium", secretIntensity:"High",
+        structuralControl:"Pack assembly more accessible. BMS software is key trade secret. Recycling emerging, less consolidated.",
+        holders:[{company:"Redwood Materials",country:"USA",detail:"Battery recycling & materials recovery"},{company:"Li-Cycle",country:"Canada",detail:"Hydrometallurgical battery recycling"},{company:"Brunp/CATL",country:"China",detail:"Integrated recycling"}],
+        domPosition:"Nascent",
+        domAssets:"VRFB potential (vanadium reserves) underexplored. Pack assembly and BESS integration emerging.",
+        domPatent:null, trend:null,
+        target:"SAREM: 60% battery localisation. BESS procurement via REIPPPP BESS window."
+      }
+    ]
+  },
+  { id:"hydrogen", name:"Green Hydrogen", color:"#10B981",
+    summary:"South Africa holds ~80% of the world's platinum reserves and >85% of iridium reserves — critical PEM electrolyser inputs. The HySA programme supports R&D, but manufacturing depth remains insufficient. Grid reliability is a binding constraint. The alkaline vs PEM pathway choice is strategically consequential.",
+    status:"Asset / Nascent",
+    patentBar:{Japan:28,USA:18,Germany:16,China:14,UK:8,"S. Korea":6,Other:10},
+    patentNote:"PEM electrolyser patents concentrated in Europe, USA, Japan; alkaline less patent-intensive.",
+    targets:"HSRM (2021): 500,000 t/yr green H2 by 2030; 10 GW electrolysis; USD 1.60/kg cost target; 20,000 jobs/yr by 2030; 15 GW by 2040.",
+    stages:[
+      { name:"Upstream", borderColor:"#7C3AED",
+        techs:["PGM mining/refining (Pt, Ir for PEM)","Catalyst production","MEA fabrication","Nafion PEM membrane","Ti bipolar plates","Alkaline (Ni electrodes, ZrO2 diaphragms)","SOEC ceramics (YSZ)"],
+        patentIntensity:"Very High", secretIntensity:"Very High",
+        structuralControl:"Nafion membrane monopoly (DuPont/Chemours). Terawatt-scale Ir constraints. Alkaline pathway less patent-intensive — potential bypass.",
+        holders:[{company:"Chemours/DuPont",country:"USA",detail:"Nafion membrane monopoly"},{company:"Johnson Matthey",country:"UK",detail:"PGM catalysts/MEA"},{company:"Heraeus",country:"Germany",detail:"Precious metal catalysts"},{company:"Anglo American Platinum",country:"South Africa",detail:"~80% world's Pt reserves"},{company:"Sibanye-Stillwater",country:"South Africa",detail:"Major PGM producer"}],
+        domPosition:"Asset (PGM mining)",
+        domAssets:"Anglo American Platinum + Sibanye-Stillwater: ~80% world's Pt reserves, >85% Ir reserves. HySA R&D programme. Manufacturing depth insufficient.",
+        domPatent:"ZA202401266B (electrolysis-related, 2024)",
+        trend:"Alkaline vs PEM pathway choice strategically consequential — alkaline avoids Nafion/PGM dependency.",
+        target:"Leverage PGM asset position; HSRM electrolysis target 10 GW by 2030."
+      },
+      { name:"Midstream", borderColor:"#2563EB",
+        techs:["Electrolyser stack mfg (PEM, alkaline, SOEC)","BoP","Compressors","Purification","Water treatment"],
+        patentIntensity:"High", secretIntensity:"High",
+        structuralControl:"Electrolyser mfg concentrated among ~10 firms. Grid reliability is binding constraint.",
+        holders:[{company:"ITM Power",country:"UK",detail:"PEM electrolyser manufacturer"},{company:"Plug Power/Giner",country:"USA",detail:"PEM electrolysis systems"},{company:"Siemens Energy",country:"Germany",detail:"Silyzer PEM electrolyser"},{company:"thyssenkrupp nucera",country:"Germany",detail:"Alkaline; acquired Green Hydrogen Systems Sept 2025"},{company:"Nel ASA",country:"Norway",detail:"PEM & alkaline electrolysers"},{company:"Cummins/Accelera",country:"USA",detail:"PEM & alkaline systems"},{company:"LONGi Hydrogen",country:"China",detail:"Largest Chinese alkaline producer; 3.5 GW capacity"}],
+        domPosition:"Nascent",
+        domAssets:"No commercial electrolyser mfg. Grid reliability (load-shedding 2022-2024) deters investment. 10 GW target by 2030 (Northern Cape, HSRM).",
+        domPatent:null, trend:null,
+        target:"HSRM: 500,000 t/yr green H2 by 2030; USD 1.60/kg cost target; 20,000 jobs/yr."
+      },
+      { name:"Downstream", borderColor:"#059669",
+        techs:["Green ammonia","SAF (e-kerosene via Fischer-Tropsch)","H2 storage/distribution","Fuel cells","Industrial decarb (DRI)","Methanol","Pipelines","Refuelling stations"],
+        patentIntensity:"Medium", secretIntensity:"Medium",
+        structuralControl:"Fischer-Tropsch well-understood (Sasol expertise). Fuel cell patents concentrated (Toyota, Hyundai).",
+        holders:[{company:"Toyota",country:"Japan",detail:"Fuel cell leader; Mirai"},{company:"Hyundai",country:"S. Korea",detail:"NEXO fuel cell vehicle"},{company:"Ballard Power",country:"Canada",detail:"PEM FC heavy transport"},{company:"Sasol",country:"South Africa",detail:"Fischer-Tropsch expertise directly relevant for SAF"}],
+        domPosition:"Nascent",
+        domAssets:"Sasol — Fischer-Tropsch expertise directly relevant for SAF production. Unique SA asset for downstream hydrogen derivatives. SA-H2 Fund anchor project.",
+        domPatent:null, trend:null,
+        target:"HSRM: 15 GW electrolysis by 2040; 30,000 jobs/yr by 2040."
+      }
+    ]
+  },
+  { id:"ev", name:"New Energy Vehicles (NEV)", color:"#EF4444",
+    summary:"Over 99% of South Africa's automotive production remains ICE. Only 62 public charging points existed as of 2024. BMW, VW, Toyota, Ford, Mercedes-Benz all assemble in SA but none producing EVs locally yet. ~110,000 direct automotive jobs are at risk. The 150% NEV tax deduction (March 2026-2036) is the principal fiscal signal.",
+    status:"Absent",
+    patentBar:{China:24,USA:23,Japan:20,"S. Korea":12,Germany:11,Other:10},
+    patentNote:"Toyota filed 125 EV patents in Q3 2024 alone; China leads annual filings.",
+    targets:"EV White Paper (Dec 2023): dual ICE+EV platform by 2035. 150% tax deduction for NEV investment (March 2026-2036). Fleet transition to SA-produced NEVs.",
+    stages:[
+      { name:"Upstream", borderColor:"#7C3AED",
+        techs:["Battery cell production","Electric motor/NdFeB mfg","SiC/GaN power semiconductor fabrication","Copper winding","Rare earth processing"],
+        patentIntensity:"Very High", secretIntensity:"Very High",
+        structuralControl:"Bundled barriers. SiC semiconductor fab concentrated (Wolfspeed, Infineon, STMicro).",
+        holders:[{company:"Wolfspeed",country:"USA",detail:"SiC wafers"},{company:"Infineon",country:"Germany",detail:"Power semiconductors"},{company:"STMicroelectronics",country:"Europe",detail:"SiC MOSFETs"},{company:"Rohm",country:"Japan",detail:"SiC devices for automotive"},{company:"Nidec",country:"Japan",detail:"E-axle & traction motor systems"},{company:"BorgWarner",country:"USA",detail:"Electric drivetrain components"}],
+        domPosition:"Absent", domAssets:"Absent across all upstream NEV components.",
+        domPatent:null, trend:null,
+        target:"No upstream target."
+      },
+      { name:"Midstream", borderColor:"#2563EB",
+        techs:["Pack assembly","Power electronics (inverter, OBC, DC-DC)","E-axle integration","VCU","BMS software","Thermal management"],
+        patentIntensity:"High", secretIntensity:"Very High",
+        structuralControl:"OEM global platform decisions determine SA production timelines. Skills gap in high-voltage/BMS/software substantial.",
+        holders:[{company:"Tesla",country:"USA",detail:"Integrated EV powertrain"},{company:"BYD",country:"China",detail:"Vertically integrated EV mfg"},{company:"Bosch",country:"Germany",detail:"Power electronics & EV components"},{company:"Continental",country:"Germany",detail:"EV drivetrain systems"},{company:"Nidec",country:"Japan",detail:"E-axle systems"},{company:"Valeo",country:"France",detail:"Thermal management & power electronics"},{company:"Toyota",country:"Japan",detail:"125 EV patents Q3 2024"},{company:"Hyundai",country:"S. Korea",detail:"E-GMP; 28 patents Q3 2024"},{company:"Huawei",country:"China",detail:"32 EV patents Q3 2024"}],
+        domPosition:"Absent",
+        domAssets:"BMW, VW, Toyota, Ford, Mercedes-Benz assemble in SA; none producing EVs locally yet. Existing plants could potentially be retooled. >99% of SA production remains ICE.",
+        domPatent:null, trend:null,
+        target:"EV White Paper: dual ICE+EV platform by 2035. 150% NEV deduction 2026-2036."
+      },
+      { name:"Downstream", borderColor:"#059669",
+        techs:["Vehicle assembly","EVSE mfg","After-sales","V2G","Battery swapping","Fleet management","Recycling"],
+        patentIntensity:"Medium", secretIntensity:"Medium",
+        structuralControl:"Charging infrastructure contestable. Fleet transition requires policy coordination.",
+        holders:[{company:"ChargePoint",country:"USA",detail:"EV charging network & hardware"},{company:"ABB E-mobility",country:"Switzerland",detail:"DC fast charging systems"},{company:"Tesla Supercharger",country:"USA",detail:"Proprietary charging (opening)"},{company:"NIO",country:"China",detail:"Battery swapping technology"}],
+        domPosition:"Nascent",
+        domAssets:"Only 62 public charging points (2024). Fleet transition plan under EV White Paper.",
+        domPatent:null, trend:null,
+        target:"Fleet transition to SA-produced NEVs by 2035. 150% tax deduction incentivising NEV investment 2026-2036."
+      }
+    ]
+  },
+  { id:"grid", name:"Grid Modernisation", color:"#6366F1",
+    summary:"South Africa's distribution grid is largely a 20th-century analogue system. SANEDI coordinates SASGI, which has selected 9 municipalities for pilot projects. Municipal debt to Eskom stands at ~ZAR 78 bn. AI-related smart grid patents grew 6x since 2018; the window for domestic capability-building is narrowing.",
+    status:"Nascent / Gap",
+    patentBar:{USA:28,China:25,Germany:15,Japan:10,France:8,"S. Korea":6,Other:8},
+    patentNote:"AI-related smart grid patents grew 6x since 2018; US and China lead filings.",
+    targets:"SASGI: 9 municipality smart grid pilots. ERA 2024: Eskom unbundling; Market Code Apr 2026.",
+    stages:[
+      { name:"Upstream", borderColor:"#7C3AED",
+        techs:["Smart-grid hardware (sensors, SCADA, PMU)","AMI","Cybersecurity (OT)","Communications (fibre, 5G)"],
+        patentIntensity:"Medium", secretIntensity:"High",
+        structuralControl:"Hardware dominated by Siemens/ABB/Schneider/GE. Contractual/service model.",
+        holders:[{company:"Siemens",country:"Germany",detail:"Gridscale X (2024)"},{company:"ABB/Hitachi Energy",country:"Sweden",detail:"Digital substations"},{company:"Schneider Electric",country:"France",detail:"EcoStruxure Grid"},{company:"GE Vernova",country:"USA",detail:"Grid solutions & SCADA"},{company:"Itron",country:"USA",detail:"AMI & smart metering"},{company:"Schweitzer Engineering",country:"USA",detail:"PMU & protection relays"}],
+        domPosition:"Nascent",
+        domAssets:"SANEDI (SASGI coordination); 9 municipality smart-grid pilots. But: 20th-century analogue distribution grid.",
+        domPatent:null, trend:null,
+        target:"SASGI pilot expansion; no upstream mfg target."
+      },
+      { name:"Midstream", borderColor:"#2563EB",
+        techs:["Distribution automation","EMS","DERMS","ADMS","Bidirectional inverters","Grid-scale power electronics (STATCOM, FACTS)","Digital twins","AI/ML grid analytics"],
+        patentIntensity:"High", secretIntensity:"Very High",
+        structuralControl:"Platform dependency: cloud/AI vendors. SAP/Oracle enterprise. Eskom unbundling creates institutional complexity.",
+        holders:[{company:"Same major vendors",country:"Various",detail:"Integrated software & hardware platforms"},{company:"AI startups",country:"USA",detail:"AI grid patents grew 6x since 2018"}],
+        domPosition:"Nascent",
+        domAssets:"Load-shedding crisis (2022-2024) exposed grid fragility — created political urgency. Eskom unbundling complicating grid investment.",
+        domPatent:null, trend:"AI grid patents grew 6x since 2018. Window narrowing.",
+        target:"ERA 2024 Eskom unbundling; Market Code operational April 2026."
+      },
+      { name:"Downstream", borderColor:"#059669",
+        techs:["Grid integration of renewables","Demand-response","Municipal distribution upgrades","Microgrids","Peer-to-peer energy trading","EV charging load management","VPP aggregation"],
+        patentIntensity:"Low", secretIntensity:"Medium",
+        structuralControl:"Municipal fiscal constraints are binding. ZAR 78 bn debt to Eskom.",
+        holders:[{company:"Various utilities & integrators",country:"Various",detail:"Platform & system integration"}],
+        domPosition:"Gap",
+        domAssets:"Revenue enhancement projects (reducing non-technical losses/electricity theft) under SASGI. Municipalities fiscally constrained.",
+        domPatent:null, trend:null,
+        target:"Municipal distribution upgrades under SASGI; fiscal pathway unresolved."
+      }
+    ]
+  }
+];
+const SA_POLICIES = {
+  trade: [
+    {name:"AfCFTA Implementation", year:"2021–", summary:"Continental free-trade architecture under which SA seeks to scale REIPPPP, NEV, and battery value chains regionally; SA-led Africa Green Industrialisation Initiative (AGII) operationalises the trade dimension.", link:"https://au-afcfta.org/"},
+    {name:"SACU & SADC EPA frameworks", year:"Ongoing", summary:"Regional preference architecture under which SA negotiates rules of origin and tariff lines for green tech components; constrains SA's room to set unilateral local-content thresholds.", link:"https://www.sacu.int/"},
+    {name:"WTO TRIPS engagement", year:"2020–", summary:"SA co-sponsored (with India) the COVID-19 TRIPS waiver and has signalled support for extending IP flexibilities to climate technologies through Article 31bis discussions.", link:"https://www.wto.org/english/tratop_e/trips_e/trips_e.htm"},
+    {name:"BRICS+ technology cooperation", year:"2010–", summary:"Channels for tech cooperation through the New Development Bank (NDB), the BRICS Innovation Action Plan, and the BRICS Energy Research Cooperation Platform; complements OECD-led JETP architecture.", link:"https://www.ndb.int/"},
+    {name:"FOCAC Action Plans", year:"2000–", summary:"Forum on China–Africa Cooperation channels Chinese green-tech finance and project flows; SA is a key node for solar, wind, BESS, and NEV components.", link:"https://www.focac.org/"},
+    {name:"Localisation requirements (REIPPPP)", year:"2011–", summary:"Procurement-linked local-content thresholds (currently ~40–47% in wind, ~50% in solar, rising to 60% in batteries) embedded in REIPPPP bidding rounds; principal vehicle for technology absorption from foreign IP holders.", link:"https://www.ipp-projects.co.za/"}
+  ],
+  fiscal: [
+    {name:"Section 12B Renewable Energy Allowance", year:"2009–2025", summary:"Accelerated 50/30/20 depreciation for renewable assets; foundational fiscal incentive for utility-scale and embedded generation projects.", link:"https://www.sars.gov.za/"},
+    {name:"Section 12BA 125% Allowance (Solar Tax Incentive)", year:"2023–2026", summary:"125% upfront capital allowance for renewable assets brought into use between 1 March 2023 and 28 February 2026; principal short-term fiscal stimulus for embedded generation.", link:"https://www.sars.gov.za/"},
+    {name:"NEV 150% Investment Allowance", year:"2026–2036", summary:"150% upfront investment allowance for qualifying NEV manufacturing assets, announced in the 2024 Budget and operationalised from March 2026; designed to anchor BEV/PHEV assembly in SA.", link:"https://www.treasury.gov.za/"},
+    {name:"Carbon Tax (Phase 1 & 2)", year:"2019–", summary:"ZAR-denominated carbon tax with rising rate (Phase 2 escalation from 2026); revenue partially recycled to renewables and energy-efficiency programmes.", link:"https://www.treasury.gov.za/"},
+    {name:"Green Finance Taxonomy", year:"2022–", summary:"National Treasury-led classification framework aligned with the EU Taxonomy; foundational instrument for sovereign and corporate green-bond issuance and JETP-linked financing.", link:"https://sustainablefinanceinitiative.org.za/"},
+    {name:"Special Economic Zones (SEZs)", year:"2014–", summary:"Tax incentives, customs preferences, and infrastructure for designated industrial zones (Coega, Atlantis, Tshwane Automotive); principal spatial vehicle for green manufacturing localisation.", link:"https://www.thedtic.gov.za/sectors-and-services-2/industrial-development/special-economic-zones/"}
+  ],
+  regulatory: [
+    {name:"Integrated Resource Plan (IRP 2019; IRP 2024 draft)", year:"2019–", summary:"Statutory electricity capacity plan setting renewable, gas, nuclear, and coal allocations; principal driver of REIPPPP procurement rounds and the binding constraint on grid-scale green deployment.", link:"https://www.energy.gov.za/IRP/"},
+    {name:"REIPPPP Bid Windows 1–7", year:"2011–", summary:"Renewable Energy Independent Power Producer Procurement Programme; 123 projects contracted, ZAR 256 bn mobilised since 2011; principal procurement vehicle for utility-scale wind and solar.", link:"https://www.ipp-projects.co.za/"},
+    {name:"Just Energy Transition Investment Plan (JET-IP)", year:"2022–2031", summary:"Presidential-led investment plan (ZAR 1.5 tn over 2023–2027) operationalising the JETP pledge; covers electricity, NEVs, green hydrogen, and skills.", link:"https://www.thepresidency.gov.za/just-energy-transition-investment-plan-jet-ip-2023-2027"},
+    {name:"South African Renewable Energy Masterplan (SAREM)", year:"2024–", summary:"Sector masterplan setting 47% wind / 50% solar / 60% battery localisation targets and a coordinated industrial strategy across REIPPPP value chains.", link:"https://www.thedtic.gov.za/"},
+    {name:"Hydrogen Society Roadmap (HSRM) & Green Hydrogen Commercialisation Strategy", year:"2021–", summary:"Sets a 500 kt/yr green H₂ production target by 2030 (~9 GW electrolyser capacity); platform for the Boegoebaai SEZ and the SA-H2 Fund.", link:"https://www.dst.gov.za/"},
+    {name:"Electricity Vehicles White Paper (EV White Paper)", year:"2023", summary:"DTIC roadmap for SA's transition from ICE to NEV manufacturing; foundation for the NEV 150% allowance and the South African Automotive Masterplan (SAAM 2035).", link:"https://www.thedtic.gov.za/"}
+  ]
+};
+const SA_FINANCING_INSTRUMENTS = [
+  {name:"Just Energy Transition Partnership (JETP)", type:"blended", value:"USD ~11.8 bn", period:"2021–", sectors:"Cross-cutting", institution:"International Partners Group (IPG)", detail:"COP26 pledge of USD 8.5 bn (Nov 2021), expanded to ~USD 11.8 bn. US withdrew Feb 2025, cancelling USD 56 m unallocated grants and ~USD 1 bn in commercial investment potential. Principal political-economic anchor of SA's transition financing."},
+  {name:"REIPPPP", type:"procurement", value:"ZAR 256 bn", period:"2011–", sectors:"Wind, Solar, BESS", institution:"DMRE / IPP Office", detail:"123 projects contracted across seven bid windows since 2011; principal vehicle for utility-scale renewable deployment and embedded local-content thresholds (40–60%)."},
+  {name:"Section 12B Allowance", type:"fiscal", value:"Tax expenditure", period:"2009–2025", sectors:"Renewables", institution:"National Treasury / SARS", detail:"50/30/20 accelerated depreciation for renewable assets; foundational incentive for IPP and embedded generation projects."},
+  {name:"Section 12BA 125% Allowance", type:"fiscal", value:"Tax expenditure", period:"2023–2026", sectors:"Solar PV, BESS", institution:"National Treasury / SARS", detail:"125% upfront capital allowance for renewable assets brought into use between 1 March 2023 and 28 February 2026; central short-term embedded-generation stimulus."},
+  {name:"NEV 150% Investment Allowance", type:"fiscal", value:"Tax expenditure", period:"2026–2036", sectors:"NEV manufacturing", institution:"National Treasury / dtic", detail:"150% upfront investment allowance for qualifying NEV manufacturing assets; designed to anchor BEV/PHEV assembly under the EV White Paper trajectory."},
+  {name:"Carbon Tax (Phase 1 & 2)", type:"fiscal", value:"~ZAR 2 bn/yr (Phase 1)", period:"2019–", sectors:"Cross-cutting", institution:"National Treasury / DFFE", detail:"Phase 1 ZAR 159/tCO₂e (2024); Phase 2 escalation from 2026. Revenue partially recycled to renewables and energy-efficiency programmes."},
+  {name:"Green Finance Taxonomy", type:"fiscal", value:"Enabling framework", period:"2022–", sectors:"Cross-cutting", institution:"National Treasury / IFC", detail:"National classification framework aligned with the EU Taxonomy; underpins sovereign and corporate green-bond issuance and JETP-linked financing pipelines."},
+  {name:"Localisation Support Fund (LSF)", type:"blended", value:"ZAR 200 m initial", period:"2024–", sectors:"REIPPPP value chains", institution:"dtic / DBSA / private sector", detail:"Public-private fund supporting domestic manufacturing in REIPPPP value chains; consolidates SAREM localisation thresholds with a financing facility."},
+  {name:"DBSA Climate Finance Facility", type:"concessional", value:"USD 110 m (initial)", period:"2018–", sectors:"Renewables, BESS, EE", institution:"DBSA / GCF / Nedbank", detail:"GCF-backed credit-enhancement facility for renewable and energy-efficiency projects; pioneer SA blended-finance vehicle."},
+  {name:"IDC Green Industries Strategic Business Unit", type:"concessional", value:"ZAR-denominated portfolio", period:"2011–", sectors:"Renewables, NEV, H₂", institution:"Industrial Development Corporation", detail:"Industrial development financing for green manufacturing, REIPPPP local-content suppliers, NEV component plants, and electrolyser pilots."},
+  {name:"SEFA Green Finance", type:"concessional", value:"ZAR-denominated portfolio", period:"2012–", sectors:"SMME renewables", institution:"Small Enterprise Finance Agency (DBSA subsidiary)", detail:"Concessional finance for SMME-scale renewables and embedded generation; complements DBSA and IDC at the lower end of the project-size spectrum."},
+  {name:"NDB (BRICS) Loans to SA", type:"concessional", value:"USD ~5 bn cumulative", period:"2016–", sectors:"Renewables, transmission, water", institution:"New Development Bank", detail:"BRICS-led concessional lending for transmission infrastructure (Eskom), water, and renewables; principal Southern alternative to OECD-led JETP financing."},
+  {name:"FOCAC Channels (Chinese Finance)", type:"concessional", value:"Variable per cycle", period:"2000–", sectors:"Renewables, NEV, BESS", institution:"China Exim, CDB, sinosure-backed", detail:"Forum on China–Africa Cooperation pledges; supports Chinese OEM presence in SA renewables, BESS, and NEV value chains."},
+  {name:"World Bank Development Policy Loan", type:"blended", value:"USD 1 bn", period:"2025", sectors:"Energy reform", institution:"World Bank", detail:"Policy-based loan supporting Eskom unbundling, transmission reform, and IRP implementation; complements JETP architecture."},
+  {name:"SA-H2 Fund", type:"blended", value:"USD ~1 bn (target)", period:"2023–", sectors:"Green hydrogen", institution:"DBSA / SANEDI / private sponsors", detail:"Blended fund anchoring the Boegoebaai SEZ and Hydrogen Valley pipeline; principal vehicle for HSRM commercialisation."},
+  {name:"Africa Green Industrialisation Initiative (AGII)", type:"grants", value:"Programme-based", period:"2024–", sectors:"Cross-cutting (continental)", institution:"SA Presidency / AU / partners", detail:"SA-led continental initiative consolidating green industrial pledges across Africa; grant and TA window complementing AfCFTA implementation."},
+  {name:"JETP Grants (Non-US partners)", type:"grants", value:"USD ~331 m (post-US exit)", period:"2021–", sectors:"Skills, just transition", institution:"EU, UK, Germany, France, Netherlands, Denmark, Canada", detail:"Grant tranche of the JETP architecture financing skills, just-transition compensation, and technical assistance; reduced after US Feb 2025 withdrawal."},
+  {name:"Sovereign Green Bonds (planned)", type:"blended", value:"Pipeline (TBD)", period:"2025–", sectors:"Cross-cutting", institution:"National Treasury", detail:"Sovereign green-bond issuance under the Green Finance Taxonomy framework; pipeline development underway with JSE and IFC TA support."}
+];
+const SA_FINANCING_TIMELINE = [
+  {year:"2021", value:8.5, milestone:"COP26 JETP pledge (USD 8.5 bn) — IPG composed of EU, UK, US, Germany, France."},
+  {year:"2022", value:10, milestone:"JET-IP published (Nov 2022); JETP package expanded toward USD 11.8 bn."},
+  {year:"2023", value:12, milestone:"Section 12BA 125% allowance entry into force (Mar 2023); Eskom unbundling progresses."},
+  {year:"2024", value:14, milestone:"Green Finance Taxonomy operational; Localisation Support Fund launched; SAREM published."},
+  {year:"2025", value:13, milestone:"US withdrawal from JETP (Feb 2025); World Bank Development Policy Loan (USD 1 bn) approved."},
+  {year:"2026", value:18, milestone:"Carbon tax Phase 2 escalation; NEV 150% allowance entry into force; Section 12BA expires."},
+  {year:"2027", value:22, milestone:"Boegoebaai SEZ scaling; SAREM localisation thresholds tightening; first sovereign green bond targeted."},
+  {year:"2028", value:25, milestone:"REIPPPP Bid Windows 8–9; AGII continental scaling; SA-H2 Fund disbursements begin."},
+  {year:"2029", value:28, milestone:"NDC mid-term review; transmission grid-build acceleration under JET-IP."},
+  {year:"2030", value:32, milestone:"HSRM 500 kt/yr H₂ target; SAREM 60% battery localisation milestone; NDC compliance."},
+  {year:"2031", value:35, milestone:"JET-IP horizon; net-zero trajectory consolidation; AGII Phase 2."}
+];
+const SA_GOVERNANCE = {
+  apex:[{name:"Presidency", role:"Political coordination of the JET-IP", note:"Holds the Presidential Climate Commission (PCC) secretariat and JETP IPG dialogue."}],
+  ministries:[
+    {name:"National Treasury", role:"Fiscal envelope, tax expenditures, Green Finance Taxonomy", note:"Section 12B/12BA, NEV 150%, carbon tax, sovereign green bonds."},
+    {name:"Department of Trade, Industry and Competition (dtic)", role:"Industrial policy, SAREM, SAAM, EV White Paper", note:"Localisation thresholds, SEZs, masterplans."},
+    {name:"Department of Mineral Resources and Energy (DMRE)", role:"Energy procurement, IRP, REIPPPP", note:"IPP Office, IRP 2019/2024, generation licensing."},
+    {name:"Department of Forestry, Fisheries and the Environment (DFFE)", role:"Carbon tax, NDC, climate adaptation", note:"NDC reporting and mitigation policy administration."}
+  ],
+  financeHubs:[
+    {name:"Development Bank of Southern Africa (DBSA)", role:"Concessional finance, JETP project preparation", note:"Climate Finance Facility (GCF-backed); JETP project pipeline."},
+    {name:"Industrial Development Corporation (IDC)", role:"Industrial finance for green manufacturing", note:"Green Industries SBU; REIPPPP local-content suppliers."},
+    {name:"Small Enterprise Finance Agency (SEFA)", role:"SMME-scale renewable finance", note:"Concessional finance for embedded generation and SMME suppliers."},
+    {name:"Localisation Support Fund (LSF)", role:"Public-private localisation finance", note:"dtic / DBSA / private sector co-investment vehicle."}
+  ],
+  regulators:[
+    {name:"Presidential Climate Commission (PCC)", role:"Multi-stakeholder advisory", note:"Provides analytical scaffolding for JET-IP and NDC."},
+    {name:"South African Reserve Bank (SARB)", role:"Financial stability, climate risk", note:"Climate stress testing; green financial regulation guidance."},
+    {name:"National Energy Regulator of South Africa (NERSA)", role:"Tariff & licensing regulation", note:"Generation licensing, tariff approvals, embedded-generation rules."},
+    {name:"Companies and IP Commission (CIPC)", role:"Patent registration & IP administration", note:"Patent filings under the Patents Act; PCT national-phase entries."}
+  ],
+  crosscutting:[
+    {name:"JETP International Partners Group", role:"Donor coordination", note:"Post-US withdrawal: EU, UK, Germany, France, Netherlands, Denmark, Canada."},
+    {name:"NDB (BRICS) & FOCAC channels", role:"Southern concessional finance", note:"Alternative pole to OECD-led JETP architecture."},
+    {name:"Africa Green Industrialisation Initiative (AGII)", role:"Continental green-tech consolidation", note:"SA-led; complements AfCFTA implementation."},
+    {name:"World Bank policy lending", role:"Energy-sector reform support", note:"Eskom unbundling, transmission reform, IRP implementation."}
+  ]
+};
+const SA_REFERENCES = [
+  {category:"Climate Finance & JETP", items:[
+    {cite:"Climate Policy Initiative. 2024. South Africa Climate Finance Landscape. London/San Francisco: CPI."},
+    {cite:"Government of South Africa. 2022. Just Energy Transition Investment Plan (JET-IP) 2023–2027. Pretoria: The Presidency.", link:"https://www.thepresidency.gov.za/just-energy-transition-investment-plan-jet-ip-2023-2027"},
+    {cite:"Presidential Climate Commission. 2024. Annual Report on the Just Energy Transition. Pretoria: PCC."},
+    {cite:"World Bank. 2025. South Africa Energy Sector Development Policy Loan. Washington, DC: World Bank.", link:"https://www.worldbank.org/"}
+  ]},
+  {category:"Fiscal Instruments", items:[
+    {cite:"National Treasury. 2024. Budget Review 2024. Pretoria: NT.", link:"https://www.treasury.gov.za/"},
+    {cite:"South African Revenue Service. 2024. Section 12B/12BA Renewable Energy Allowances Guide. Pretoria: SARS.", link:"https://www.sars.gov.za/"},
+    {cite:"National Treasury. 2022. South African Green Finance Taxonomy. Pretoria: NT.", link:"https://sustainablefinanceinitiative.org.za/"}
+  ]},
+  {category:"Development Finance Institutions & LSF", items:[
+    {cite:"DBSA. 2024. Climate Finance Facility Annual Report. Midrand: DBSA.", link:"https://www.dbsa.org/"},
+    {cite:"IDC. 2024. Green Industries Strategic Business Unit Performance Review. Sandton: IDC.", link:"https://www.idc.co.za/"},
+    {cite:"dtic. 2024. Localisation Support Fund Concept Note. Pretoria: dtic.", link:"https://www.thedtic.gov.za/"}
+  ]},
+  {category:"REIPPPP & SAREM", items:[
+    {cite:"IPP Office. 2024. REIPPPP Bid Window Status Report. Centurion: IPP Office.", link:"https://www.ipp-projects.co.za/"},
+    {cite:"dtic. 2024. South African Renewable Energy Masterplan (SAREM). Pretoria: dtic.", link:"https://www.thedtic.gov.za/"},
+    {cite:"DMRE. 2019/2024. Integrated Resource Plan. Pretoria: DMRE.", link:"https://www.energy.gov.za/IRP/"}
+  ]},
+  {category:"Sectoral Strategies (NEV, H₂, BESS)", items:[
+    {cite:"dtic. 2023. Electric Vehicles White Paper. Pretoria: dtic.", link:"https://www.thedtic.gov.za/"},
+    {cite:"Department of Science and Innovation. 2021. Hydrogen Society Roadmap. Pretoria: DSI.", link:"https://www.dst.gov.za/"},
+    {cite:"SANEDI. 2024. South African Battery Storage Sector Study. Johannesburg: SANEDI.", link:"https://www.sanedi.org.za/"}
+  ]},
+  {category:"South-South & Regional Finance", items:[
+    {cite:"New Development Bank. 2024. South Africa Country Strategy. Shanghai: NDB.", link:"https://www.ndb.int/"},
+    {cite:"AfCFTA Secretariat. 2024. Annual Report. Accra: AfCFTA.", link:"https://au-afcfta.org/"},
+    {cite:"African Union. 2024. Africa Green Industrialisation Initiative (AGII) Concept Note. Addis Ababa: AU."}
+  ]},
+  {category:"Governance & Regulation", items:[
+    {cite:"NERSA. 2024. Annual Performance Report. Pretoria: NERSA.", link:"https://www.nersa.org.za/"},
+    {cite:"SARB. 2024. Climate Risk Disclosure Guidance. Pretoria: SARB.", link:"https://www.resbank.co.za/"},
+    {cite:"CIPC. 2024. Annual IP Statistics. Pretoria: CIPC.", link:"https://www.cipc.co.za/"}
+  ]}
+];
+
+// ─── IP COMMERCIALISATION DATA (v5) ───────────────────────────────
+// Two layers: MODALITY (how IP is being made available) and PIPELINE (upstream marketplace).
+// Modality taxonomy: bilateral licensing, cross-licensing, patent pool, JV with know-how,
+//   FDI with embedded production, open pledge / open-source, compulsory licensing,
+//   technology transfer agreement (multilateral), SEP/FRAND, patent sale.
+// Pipeline taxonomy: multilateral marketplace, national TTO, university TTO,
+//   patent pool open to membership, DFI-linked platform, sectoral accelerator, standards body.
+
+const BR_IPCOMM = {
+  modality: [
+    {kind:"FDI with embedded production", sectorId:"solar", sector:"Solar PV", techTags:["topcon","n-type","modules","cell assembly","polysilicon","wafer","hjt"], actors:"LONGi / Trina Solar / JA Solar → BR module assembly", scope:"Module assembly under tariff dispensation; cell imports", terms:"No technology transfer clauses disclosed; assembly only", visibility:"Public — REIDI registrations", notes:"Pattern: assembly localised, midstream IP retained offshore. Local content threshold drives the form, not the depth."},
+    {kind:"Licensing — bilateral", sectorId:"wind", sector:"Wind Energy", techTags:["turbines","nacelle","blade","composite","tower","control software","gearbox","drivetrain"], actors:"Vestas / Siemens Gamesa → Brazilian EPCs (ABEEOLICA members)", scope:"Turbine technology, blade composites, control software", terms:"Confidential; royalty rate not disclosed; market-restricted", visibility:"Indirect — inferred from BNDES financing conditions", notes:"BNDES Finame-PSI conditioned on local content; licensing-in is the standard route."},
+    {kind:"Joint venture with know-how", sectorId:"hydrogen", sector:"Low-Carbon Hydrogen", techTags:["alkaline electrolyser","electrolyser","membrane","stack","green hydrogen","balance of plant"], actors:"thyssenkrupp nucera × Unigel (Camaçari, 60 MW)", scope:"Alkaline electrolyser technology, plant integration", terms:"Equity-linked JV; know-how transferred under licence", visibility:"Public — corporate disclosures (2023)", notes:"First commercial-scale electrolyser in BR; reference case for PHBC."},
+    {kind:"FDI with embedded production", sectorId:"ev", sector:"EVs & Green Mobility", techTags:["EV assembly","battery pack","battery assembly","li-ion","BMS","chassis","integration"], actors:"BYD → Camaçari (former Ford site)", scope:"EV assembly, battery pack assembly, R&D centre announced", terms:"R$3 bn investment commitment; tax incentives via MOVER", visibility:"Public — gov't and corporate announcements (2023–24)", notes:"BYD has indicated some local R&D capacity. Cell manufacturing remains in China."},
+    {kind:"Cross-licensing", sectorId:"ev", sector:"EVs & Green Mobility", techTags:["motor","SiC","inverter","power electronics","drivetrain","traction motor","MOSFET"], actors:"Stellantis × WEG (motor & inverter)", scope:"Drive-train motors, SiC inverter technology", terms:"Partial cross-licence; specific terms not disclosed", visibility:"Indirect — supplier disclosures", notes:"One of the few cases where a Brazilian firm contributes IP into a global OEM platform."},
+    {kind:"Compulsory licensing (preventive)", sectorId:"cross", sector:"Cross-cutting", techTags:["compulsory licensing","TRIPS","green-tech patents","INPI green track"], actors:"INPI patent guidelines on green track", scope:"Available for use under TRIPS Art. 31 if licensing terms unreasonable", terms:"Statutory; no active deployment in green tech to date", visibility:"Public — INPI guidance", notes:"The 2007 efavirenz precedent in pharma is the reference. No green-tech case yet. Applicable in principle across all sectors."},
+    {kind:"Open pledge / open-source", sectorId:"mrv", sector:"Digital MRV & Industrial AI", techTags:["MRV","remote sensing","Earth observation","climate data","analytics","satellite imagery","AI models"], actors:"INPE / EMBRAPA-supported tooling", scope:"Selected remote-sensing and MRV codebases under permissive licences", terms:"Open licences (MIT, Apache-2.0 variants)", visibility:"Public — repository registrations", notes:"Limited but growing footprint. Useful precedent for climate-MRV co-development."},
+    {kind:"Patent pool membership", sectorId:"ev", sector:"EVs & Green Mobility", techTags:["telematics","SEP","connected vehicle","V2X","cellular","5G modem"], actors:"Brazilian OEMs (selected) → Avanci SEP pool (telematics)", scope:"Connected-vehicle SEP licensing through pool", terms:"Pool-published rates per vehicle (USD 9–15)", visibility:"Public — Avanci membership rolls", notes:"Telematics pool, not battery/drive-train. Battery pool architecture does not yet exist."},
+    {kind:"Technology transfer agreement (multilateral)", sectorId:"cross", sector:"Cross-cutting", techTags:["technology transfer","adaptation","water","agriculture","capacity building"], actors:"UNFCCC CTCN → MCTI requests (selected)", scope:"Climate-resilient agricultural and water technologies", terms:"Grant-funded technical assistance; no IP transfer per se", visibility:"Public — CTCN response register", notes:"Modality is structurally light; assistance rather than IP transfer in the strict sense."},
+    {kind:"Licensing — bilateral", sectorId:"steel", sector:"Green Steel / H2-DRI", techTags:["DRI","H2-DRI","direct reduction","green steel","shaft furnace","MIDREX","blast furnace"], actors:"MIDREX Technologies → Gerdau (planning)", scope:"DRI-H2 process licence", terms:"Standard MIDREX licence package; royalty undisclosed", visibility:"Indirect — corporate planning documents", notes:"Brazil's exposure to MIDREX's posture on green-H2 route is a strategic single-point dependence."}
+  ],
+  pipeline: [
+    {kind:"Multilateral marketplace", anchor:"WIPO GREEN", scope:"Catalogued green-tech patents and needs", entries:"Embrapa biomass technologies; INPE Earth-observation tools; FAPESP-funded patents listed", relevance:"Discovery layer; bilateral negotiation off-platform", maturity:"Active, low traffic", notes:"Brazilian contributions visible; Brazilian licensees minimal. Surface meets discovery; conversion is the bottleneck."},
+    {kind:"National TTO", anchor:"INPI — Centro de Disseminação de Informação Tecnológica (CEDIN)", scope:"Patent landscaping and licensing-out support for Brazilian inventors", entries:"Green-track patents (since 2012) prioritised in examination", relevance:"Domestic licensing-out support; limited outbound deals", maturity:"Operational", notes:"The green-track accelerated examination is the procedural lever; commercialisation downstream is patchy."},
+    {kind:"National TTO", anchor:"Embrapii (Brazilian Company for Industrial Research and Innovation)", scope:"Project-based industry-academic R&D matching", entries:"~110 cooperative units; 25%+ in green tech and energy", relevance:"R&D-to-product translation; matchmaking with industry", maturity:"Mature", notes:"Closest thing to a functioning tech-transfer machine in Brazil. Already integrated with BNDES, FINEP."},
+    {kind:"University TTO", anchor:"USP, Unicamp, UFRJ Innovation Agencies (Agência USP, Inova Unicamp, AGI/UFRJ)", scope:"Patent licensing-out from federal/state universities", entries:"Biofuels, biomass, photovoltaics, water treatment", relevance:"Discovery + early commercialisation; thin deal flow", maturity:"Operational, variable quality", notes:"Variation across institutions is large; Inova Unicamp is the reference benchmark."},
+    {kind:"DFI-linked platform", anchor:"BNDES Garagem (acceleration) + BNDES PEC (corporate venture)", scope:"Cleantech start-up acceleration and seed/Series-A co-investment", entries:"~80 cleantech start-ups in current cohort", relevance:"Pipeline from R&D to commercialisable IP", maturity:"Active", notes:"Strongest demand-side pull mechanism in the system. Underused as IP-licensing platform."},
+    {kind:"Sectoral accelerator", anchor:"FINEP Chamada Clima (call for climate-tech R&D grants)", scope:"Public R&D funding for climate-relevant IP", entries:"~R$1 bn cycle 2024–25; ~120 projects funded", relevance:"Upstream of patent filing", maturity:"Active", notes:"Funding upstream of IP creation; commercialisation pipeline downstream remains thin."},
+    {kind:"Patent pool — open to members", anchor:"Eco-Patent Commons (historical) / WBCSD initiatives", scope:"Open green-tech patent pool (defunct 2016)", entries:"None currently — pool wound down", relevance:"Cautionary precedent for the project's Component 2 Level (b)", maturity:"Defunct", notes:"The history of the Eco-Patent Commons is itself analytical content: voluntary pools without enforcement mechanisms do not scale."},
+    {kind:"Standards body", anchor:"ABNT — Brazilian Standards Body", scope:"Technical standards setting; SEP exposure", entries:"Solar, wind, battery, EV standards being aligned with IEC", relevance:"Standards-essential patents enter through this layer", maturity:"Active", notes:"Brazilian standards alignment with IEC has accelerated; SEP exposure also rising."}
+  ]
+};
+
+const SA_IPCOMM = {
+  modality: [
+    {kind:"FDI with embedded production", sectorId:"solar", sector:"Solar PV", techTags:["modules","module assembly","cells","crystalline silicon","BIPV","mounting"], actors:"ARTsolar (Durban) → bilateral with Asian cell suppliers", scope:"Module assembly; limited tooling licensing", terms:"Standard tolling arrangements; no cell-technology transfer", visibility:"Public — corporate disclosures", notes:"Local module assembly without cell manufacturing — the canonical 'downstream participation, midstream absent' pattern."},
+    {kind:"Joint venture with know-how", sectorId:"wind", sector:"Wind Energy", techTags:["towers","tower fabrication","blade","composite","structural steel","welding"], actors:"DCD Wind Towers × Vestas/Siemens Gamesa (towers, blades)", scope:"Towers and blade structures; component-level IP", terms:"Component manufacturing licences; design IP retained by OEM", visibility:"Public — REIPPPP local content disclosures", notes:"Local content thresholds in REIPPPP drive the form; depth of IP transfer remains limited."},
+    {kind:"Bilateral MoU (pre-licensing)", sectorId:"hydrogen", sector:"Green Hydrogen", techTags:["electrolyser","alkaline electrolyser","PEM electrolyser","off-take","ammonia","green hydrogen"], actors:"Sasol × thyssenkrupp nucera; Sasol × Linde", scope:"Electrolyser supply discussions; off-take partnerships", terms:"Non-binding; commercial terms TBD", visibility:"Public — corporate announcements (2022–24)", notes:"The Hydrogen Society Roadmap 10 GW target reduces, in practice, to bilateral negotiations with a small number of electrolyser holders. The dashboard does not yet score the resulting concentration risk."},
+    {kind:"FDI with embedded production", sectorId:"hydrogen", sector:"Green Hydrogen", techTags:["PEM electrolyser","PEM","iridium catalyst","platinum catalyst","membrane","stack","MEA"], actors:"ITM Power (UK) — site selection considering SA presence", scope:"PEM electrolyser assembly potential", terms:"Under negotiation; JETP-linked", visibility:"Indirect — JETP working group discussions", notes:"PEM electrolyser anchor would be transformative. The IP architecture under any such deal is the negotiation."},
+    {kind:"Cross-licensing", sectorId:"ev", sector:"New Energy Vehicles (NEV)", techTags:["FCEV","fuel cell","Mirai","hybrid","powertrain","PEM fuel cell"], actors:"Toyota SA Motors × Toyota Global (Prologis, Mirai supply)", scope:"FCEV powertrain and hybrid drivetrain", terms:"Intra-group cross-licence; commercial terms internal", visibility:"Public — corporate group disclosures", notes:"Intra-group transfer rather than third-party cross-licence. Different IP economics."},
+    {kind:"Compulsory licensing (statutory, not used in green tech)", sectorId:"cross", sector:"Cross-cutting", techTags:["compulsory licensing","TRIPS","Patents Act","public-interest","green-tech patents"], actors:"CIPC examination posture; SA Patents Act §56", scope:"Available under public-interest grounds", terms:"Statutory; no active deployment in green tech", visibility:"Public — CIPC and Patents Act", notes:"South Africa has never invoked compulsory licensing in pharma despite TRIPS flexibilities, and certainly not in green tech. The procedural lever exists; the political appetite has not been tested. Applicable across all sectors."},
+    {kind:"Open pledge / open-source", sectorId:"cross", sector:"Cross-cutting (water, MRV, analytics)", techTags:["MRV","water tech","analytics","monitoring","open-source software","climate data"], actors:"CSIR — selected MRV codebases (open licences)", scope:"Climate and water MRV tooling; selected analytics", terms:"Permissive open licences (selected projects)", visibility:"Public — CSIR repositories", notes:"Limited but the most credible domestic precedent. Could be scaled as a Component 2 Level (c) deliverable."},
+    {kind:"Patent pool membership", sectorId:"ev", sector:"New Energy Vehicles (NEV) / Telematics", techTags:["telematics","SEP","connected vehicle","V2X","cellular","5G modem"], actors:"SA OEM assembly affiliates → Avanci SEP pool (via parent group)", scope:"Connected-vehicle SEP licensing", terms:"Pool-published per-vehicle rates", visibility:"Public — pool membership rolls", notes:"Membership via parent group; SA-domiciled firms not active poolers."},
+    {kind:"Technology transfer agreement (multilateral)", sectorId:"cross", sector:"Cross-cutting", techTags:["technology transfer","adaptation","capacity building","CTCN","UNFCCC"], actors:"UNFCCC CTCN response cases (DFFE requests)", scope:"Climate-adaptation technologies; selected mitigation", terms:"Grant-funded technical assistance; no IP transfer per se", visibility:"Public — CTCN response register", notes:"As in Brazil, modality is structurally light. Useful for problem-scoping; weak for actual technology transfer."},
+    {kind:"Licensing — bilateral", sectorId:"battery", sector:"Battery & Energy Storage", techTags:["VRFB","vanadium","vanadium redox","redox flow","stack","electrolyte"], actors:"Bushveld Energy × Invinity (vanadium redox flow)", scope:"VRFB stack technology; vanadium electrolyte supply integration", terms:"Confidential; commercial licence", visibility:"Public — corporate disclosures", notes:"Rare case where a SA firm sits at midstream of a midstream-IP-intensive chain — leveraging vanadium endowment."}
+  ],
+  pipeline: [
+    {kind:"Multilateral marketplace", anchor:"WIPO GREEN", scope:"Catalogued green-tech patents and needs", entries:"CSIR-listed water, energy, materials technologies; DSI-funded innovations", relevance:"Discovery layer; bilateral negotiation off-platform", maturity:"Active, low traffic", notes:"SA contributions visible (water and PV cell technologies most prominent); SA licensees minimal."},
+    {kind:"National TTO", anchor:"NIPMO — National Intellectual Property Management Office (DSI)", scope:"IP management at publicly funded research institutions", entries:"Coverage across CSIR, universities, science councils", relevance:"Statutory oversight + licensing facilitation", maturity:"Mature — IPR-PFRD Act 2008 framework", notes:"NIPMO is the most consequential single node. Its posture on green-tech licensing-out and freedom-to-operate guidance is shaping the pipeline."},
+    {kind:"National TTO", anchor:"TIA — Technology Innovation Agency (DSI)", scope:"Late-stage R&D funding; commercialisation support", entries:"Energy, water, biotechnology projects; ~40 active cleantech", relevance:"Pre-commercial validation; introduction to investors", maturity:"Operational", notes:"Funding instrument more than IP marketplace; commercialisation outcomes uneven."},
+    {kind:"National TTO", anchor:"CSIR Technology Transfer Office", scope:"Licensing-out of CSIR-developed technologies", entries:"Water treatment, advanced materials, sensor tech, MRV tooling", relevance:"Direct licensing-out + spin-out support", maturity:"Mature", notes:"Strongest sectoral coverage in water and materials. Energy patent portfolio thinner."},
+    {kind:"University TTO", anchor:"Wits Enterprise; UCT RC&I; Stellenbosch Innovus", scope:"University IP licensing and spin-out support", entries:"PGM chemistry, fuel cells, battery materials, water tech", relevance:"Discovery + early commercialisation", maturity:"Operational, uneven across institutions", notes:"HySA platform (Wits, UCT, Stellenbosch hub-and-spoke) is the most notable green-tech consortium. PGM-PEM is the natural anchor."},
+    {kind:"DFI-linked platform", anchor:"IDC — Industrial Development Corporation cleantech portfolio", scope:"Equity, mezzanine, concessional finance for cleantech firms", entries:"~ZAR 30 bn cleantech exposure across solar, wind, hydrogen, NEV", relevance:"Demand-side pull; IP commercialisation downstream", maturity:"Active", notes:"Largest single demand-side pull mechanism in SA. IP terms in IDC deal documents are the negotiation lever."},
+    {kind:"Sectoral accelerator — HySA Hub-and-Spoke", anchor:"HySA Catalysis (UCT) / Systems (Stellenbosch) / Infrastructure (NWU)", scope:"Hydrogen technology development and commercialisation", entries:"PEM catalysts, AEM electrolysers, fuel cell systems, hydrogen logistics", relevance:"Sectorally specific; PGM-leveraged", maturity:"Mature for SA standards", notes:"HySA is the closest SA gets to a domestic anchor in the green-H2 IP chain. Component 2 Level (c) could anchor on it."},
+    {kind:"Standards body", anchor:"SABS — South African Bureau of Standards", scope:"Technical standards; SEP exposure mapping", entries:"Solar, wind, EV, hydrogen safety standards", relevance:"Standards-essential patents enter through this layer", maturity:"Active", notes:"SABS alignment with IEC is accelerating; SEP exposure rising. Underused as a strategic lever."}
+  ]
+};
+
+const COUNTRY_DATA = {
+  br: {sectors:BR_SECTORS, policies:BR_POLICIES, financing:BR_FINANCING_INSTRUMENTS, timeline:BR_FINANCING_TIMELINE, governance:BR_GOVERNANCE, references:BR_REFERENCES, ipcomm:BR_IPCOMM,
+       financingCurrency:"R$", openingPara:"Brazil enters the international IP regime as a large domestic market, a mature deployment ecosystem in selected sectors (solar, wind onshore, EV assembly), and a near-absent player in upstream IP-intensive segments. The NIB, MOVER, PHBC, and SBCE constitute the current policy architecture through which the Brazilian state is attempting to negotiate this position.",
+       financingPara:"The Brazilian green industrialisation financing architecture mobilises ~R$607 bn across 12 principal instruments between 2023 and 2033, with peak annual deployment of R$110 bn in 2025. The architecture layers concessional development finance (BNDES), blended platforms (Eco Invest, GFANZ), fiscal incentives (MOVER, PHBC, Rehidro), and R&D grants (FINEP, Chamada de Clima)."},
+  sa: {sectors:SA_SECTORS, policies:SA_POLICIES, financing:SA_FINANCING_INSTRUMENTS, timeline:SA_FINANCING_TIMELINE, governance:SA_GOVERNANCE, references:SA_REFERENCES, ipcomm:SA_IPCOMM,
+       financingCurrency:"USD", openingPara:"South Africa enters the structure with a singular configuration: a mature REIPPPP procurement platform, near-monopoly reserves of platinum-group metals and iridium, a post-COP26 JETP pledge (expanded to ~USD 11.8 bn, reset by the February 2025 withdrawal of the United States), and a fiscal architecture stretched between Section 12B/12BA, the carbon tax, the NEV 150% allowance, and the Green Finance Taxonomy.",
+       financingPara:"The South African green industrialisation financing architecture is organised around a recurring shortfall: ZAR 188.3 bn/year tracked against ZAR 499 bn/year required to meet the NDC and net-zero trajectory — a gap of roughly ZAR 310 bn/year (CPI/PCC, 2024). Eighteen principal instruments layer concessional, blended, fiscal, procurement, and grant resources."},
+};
+
+
+// ─── OPENING PAGE ───
+const OpeningPage = ({country, setTab, setCountry}) => {
+  const T_ = COUNTRY_THEMES[country];
+  const D_ = COUNTRY_DATA[country];
+  return (
+  <div style={{maxWidth:1100, margin:"0 auto", padding:"32px 16px"}}>
+    <div style={{background:"#fff", borderRadius:16, border:"1px solid #E5E7EB", padding:"36px 40px", marginBottom:24, borderTop:"6px solid "+T_.header}}>
+      <h2 style={{fontSize:26, fontWeight:700, color:"#111827", marginBottom:16}}>Dashboard Presentation</h2>
+      <p style={{fontSize:15, color:"#374151", lineHeight:1.75, marginBottom:14}}>
+        This consolidated dashboard reconstructs <strong>South Africa's</strong> green industrialisation efforts as articulations of three levels of analysis — the international <T c="IP"/> regime, the green financial architecture, and the domestic political economy of industrial policy. It is part of the <strong><T c="IPR"/> & Green Industrialisation</strong> research programme (Esteves 2026), which treats <TipText>apparently technical arrangements — patent law, licensing practices, local-content thresholds, climate-finance instruments — as sites of political struggle over the legitimacy and scale of Southern industrial catch-up</TipText>.
+      </p>
+      <p style={{fontSize:15, color:"#374151", lineHeight:1.75, marginBottom:14}}>
+        Reading the two cases together exposes a structural condition shared by middle-income economies attempting catch-up under the prevailing <T c="IP"/> regime, while preserving the analytical grain of their distinct fiscal envelopes, sectoral assets, and international partnerships. <strong>{T_.flag} {T_.name}</strong> {D_.openingPara}
+      </p>
+      <p style={{fontSize:15, color:"#374151", lineHeight:1.75, margin:0}}>
+        This single-country dashboard renders the South African case; the Brazilian case lives in a companion file, and the cross-case comparison sits in the consolidated dashboard. The value chains, policies, targets, financing, IP commercialisation, and references that follow all refer to South Africa. Every claim is sourced; every abbreviation is hover-decoded; every policy document is hyperlinked to its primary source.
+      </p>
+    </div>
+
+    <div style={{background:"#fff", borderRadius:16, border:"1px solid #E5E7EB", padding:"28px 32px", marginBottom:24}}>
+      <h3 style={{fontSize:20, fontWeight:700, color:"#111827", marginBottom:14}}>How to Navigate</h3>
+      <p style={{fontSize:14, color:"#4B5563", lineHeight:1.7, marginBottom:14}}>
+        The dashboard is structured along two navigation axes. The <strong>Tab axis</strong> moves between Overview, Value Chains, Policies, Targets, Financing, IP Commercialisation, and References. Within Value Chains, a second axis — sectors — switches between South Africa's six green industrialisation segments (Solar PV, Wind, Battery & Energy Storage, Green Hydrogen, New Energy Vehicles, Grid Modernisation).
+      </p>
+      <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(240px,1fr))", gap:14, marginTop:14}}>
+        {[
+          {label:"Overview", note:"This opening page — purpose, components, attribution."},
+          {label:"Value Chains", note:"Six sectors × three stages. Patents, holders, country position."},
+          {label:"Policies", note:"Trade / Fiscal / Regulatory. Policy cards with hyperlinks."},
+          {label:"Targets", note:"Country targets per sector and stage."},
+          {label:"Financing", note:"Instruments, timeline, governance architecture."},
+          {label:"References & Abbrevs", note:"Sourced claims, 200+ abbreviations, hover decode."},
+        ].map((x,i)=>(
+          <div key={i} style={{background:"#F0FDF4", border:"1px solid #A7F3D0", borderRadius:10, padding:"14px 16px"}}>
+            <div style={{fontSize:13, fontWeight:700, color:"#064E3B", marginBottom:4}}>{x.label}</div>
+            <div style={{fontSize:12, color:"#064E3B", lineHeight:1.5, opacity:0.85}}>{x.note}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div style={{background:"#fff", borderRadius:16, border:"1px solid #E5E7EB", padding:"28px 32px", marginBottom:24}}>
+      <h3 style={{fontSize:20, fontWeight:700, color:"#111827", marginBottom:14}}>Dashboard Components</h3>
+      <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(240px,1fr))", gap:14}}>
+        <div style={{borderLeft:"4px solid #F59E0B", paddingLeft:14}}>
+          <div style={{fontWeight:700, fontSize:14, color:"#111827"}}>Value Chains & Technologies</div>
+          <p style={{fontSize:12, color:"#4B5563", lineHeight:1.6, marginTop:4}}>Six sectors of green industrialisation, disaggregated into upstream / midstream / downstream. Each stage surfaces the technologies, patent intensity, structural control, patent holders (company + country), and the country's position.</p>
+        </div>
+        <div style={{borderLeft:"4px solid #2563EB", paddingLeft:14}}>
+          <div style={{fontWeight:700, fontSize:14, color:"#111827"}}>Green Industrialisation Policies</div>
+          <p style={{fontSize:12, color:"#4B5563", lineHeight:1.6, marginTop:4}}>Country policy architecture organised across Trade, Fiscal, and Regulatory dimensions. Each policy card carries a brief summary and a hyperlink to the primary source.</p>
+        </div>
+        <div style={{borderLeft:"4px solid #EF4444", paddingLeft:14}}>
+          <div style={{fontWeight:700, fontSize:14, color:"#111827"}}>Sectoral Targets</div>
+          <p style={{fontSize:12, color:"#4B5563", lineHeight:1.6, marginTop:4}}>Country targets per value chain stage — drawn from sectoral plans, masterplans, and energy roadmaps.</p>
+        </div>
+        <div style={{borderLeft:"4px solid #059669", paddingLeft:14}}>
+          <div style={{fontWeight:700, fontSize:14, color:"#111827"}}>Green Industrialisation Finances</div>
+          <p style={{fontSize:12, color:"#4B5563", lineHeight:1.6, marginTop:4}}>Principal financing instruments — concessional, blended, fiscal, procurement, grants. Investment timeline. Governance topology from political apex through line ministries, <T c="DFIs"/>, regulators, and cross-cutting international partners.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:20}}>
+      <div style={{background:"#fff", borderRadius:16, border:"1px solid #E5E7EB", padding:"24px 28px"}}>
+        <h3 style={{fontSize:16, fontWeight:700, color:"#111827", marginBottom:8}}>Institutional Affiliation</h3>
+        <p style={{fontSize:13, color:"#4B5563", lineHeight:1.65, margin:0}}><strong>Equal International</strong> — <T c="IPR"/> & Green Industrialisation research programme.</p>
+      </div>
+      <div style={{background:"#fff", borderRadius:16, border:"1px solid #E5E7EB", padding:"24px 28px"}}>
+        <h3 style={{fontSize:16, fontWeight:700, color:"#111827", marginBottom:8}}>Author</h3>
+        <p style={{fontSize:13, color:"#4B5563", lineHeight:1.65, margin:0}}><strong>Paulo Esteves</strong> — Associate Professor, PUC-Rio; Senior Associate, Equal International.</p>
+      </div>
+    </div>
+  </div>);
+};
+
+// ─── VALUE CHAINS TAB ───
+const ValueChainsTab = ({country, sectorIdOverride, setSectorIdOverride, setTab, setIpcommFilter, setIpcommView}) => {
+  const SECTORS = COUNTRY_DATA[country].sectors;
+  const T_ = COUNTRY_THEMES[country];
+  // Use override if it exists in current country; otherwise default to first sector.
+  const fallback = SECTORS[0].id;
+  const effective = SECTORS.find(x=>x.id===sectorIdOverride)?.id || fallback;
+  const [active, setActive] = useState(effective);
+  // Keep local active in sync with external override (e.g., reverse navigation from Modality).
+  React.useEffect(()=>{
+    const e = SECTORS.find(x=>x.id===sectorIdOverride)?.id;
+    if (e && e !== active) setActive(e);
+  }, [sectorIdOverride, country]);
+  const setActiveAndPropagate = (id) => {
+    setActive(id);
+    if (setSectorIdOverride) setSectorIdOverride(id);
+  };
+  const s = SECTORS.find(x => x.id === active) || SECTORS[0];
+  // v5: clickable tech → jump to IP Commercialisation with sector + tech filter.
+  const goToModality = (techName) => {
+    if (!setIpcommFilter || !setTab) return;
+    setIpcommView && setIpcommView("modality");
+    setIpcommFilter({sectorId:s.id, sectorName:s.name, techName:techName});
+    setTab("ipcomm");
+  };
+  return (
+    <div style={{maxWidth:1200, margin:"0 auto", padding:"16px"}}>
+      <div style={{background:"#fff", borderBottom:"2px solid #E5E7EB", borderRadius:12, overflow:"hidden", marginBottom:20}}>
+        <div style={{display:"flex", gap:4, overflowX:"auto"}}>
+          {SECTORS.map(sec => (
+            <button key={sec.id} className="tab-btn" onClick={()=>setActiveAndPropagate(sec.id)}
+              style={{background: active===sec.id ? sec.color : "#F3F4F6",
+                color: active===sec.id ? "#fff" : "#4B5563",
+                borderBottom: active===sec.id ? "3px solid "+sec.color : "3px solid transparent",
+                minWidth:140}}>{sec.name}</button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{background:"#fff", borderRadius:12, border:"2px solid "+s.color+"40", padding:20, marginBottom:20}}>
+        <div style={{display:"flex", alignItems:"center", gap:12, marginBottom:10, flexWrap:"wrap", justifyContent:"space-between"}}>
+          <div style={{display:"flex", alignItems:"center", gap:12, flexWrap:"wrap"}}>
+            <h2 style={{fontSize:22, fontWeight:700, color:"#1F2937", margin:0}}>{s.name}</h2>
+            <StatusBadge status={s.status}/>
+          </div>
+          <button onClick={()=>{
+              setIpcommView && setIpcommView("modality");
+              setIpcommFilter && setIpcommFilter({sectorId:s.id, sectorName:s.name, techName:null});
+              setTab && setTab("ipcomm");
+            }}
+            style={{padding:"8px 14px", border:"1px solid "+s.color, background:"#fff", color:s.color, borderRadius:8, fontSize:12, fontWeight:700, cursor:"pointer", letterSpacing:0.3}}
+            title={`See how IP for ${s.name} is being commercialised`}>
+            → IP Commercialisation modalities for {s.name}
+          </button>
+        </div>
+        <p style={{fontSize:14, color:"#4B5563", lineHeight:1.7, margin:0}}><TipText>{s.summary}</TipText></p>
+        <p style={{fontSize:11, color:"#6B7280", lineHeight:1.5, margin:"10px 0 0", fontStyle:"italic"}}>
+          v5 tip: each technology chip below is clickable — it jumps to the IP Commercialisation tab and filters Modality entries to those covering the technology.
+        </p>
+      </div>
+
+      <div style={{background:"#fff", borderRadius:12, border:"1px solid #E5E7EB", padding:20, marginBottom:20}}>
+        <h3 style={{fontSize:14, fontWeight:700, color:"#374151", marginBottom:4}}>Global Patent Distribution</h3>
+        <p style={{fontSize:12, color:"#6B7280", marginBottom:12}}><TipText>{s.patentNote}</TipText></p>
+        <div style={{display:"flex", borderRadius:8, overflow:"hidden", height:32, marginBottom:10}}>
+          {Object.entries(s.patentBar).map(([k,v])=>(
+            <div key={k} style={{width:v+"%", background:PATENT_COLORS[k]||"#94A3B8", display:"flex", alignItems:"center", justifyContent:"center", color:"#fff", fontSize:12, fontWeight:600, borderRight:"2px solid rgba(255,255,255,0.2)"}}>
+              {v>=10 ? `${flag(k)} ${v}%` : v>=5 ? `${v}%` : ""}
+            </div>
+          ))}
+        </div>
+        <div style={{display:"flex", flexWrap:"wrap", gap:"8px 16px"}}>
+          {Object.entries(s.patentBar).map(([k,v])=>(
+            <span key={k} style={{fontSize:12, color:"#4B5563"}}>{flag(k)} {k}: {v}%</span>
+          ))}
+        </div>
+      </div>
+
+      <div style={{display:"flex", flexDirection:"column", gap:16, marginBottom:16}}>
+        {s.stages.map((st,i)=>(
+          <div key={i} className="stage-card" style={{background:"#fff", borderRadius:12, border:"1px solid #E5E7EB", borderLeft:"5px solid "+st.borderColor, padding:22}}>
+            <div style={{display:"flex", alignItems:"center", gap:12, marginBottom:14, flexWrap:"wrap"}}>
+              <span style={{color:"#fff", fontSize:13, padding:"4px 14px", borderRadius:6, fontWeight:700, background:st.borderColor}}>{st.name}</span>
+              <StatusBadge status={st.domPosition}/>
+            </div>
+            <div style={{marginBottom:14}}>
+              <h4 style={{fontSize:12, fontWeight:700, color:"#6B7280", textTransform:"uppercase", letterSpacing:1, marginBottom:8}}>
+                Technologies & Components <span style={{fontWeight:500, color:"#9CA3AF", textTransform:"none", letterSpacing:0}}>· click any chip to see how its IP is being commercialised</span>
+              </h4>
+              <div style={{display:"flex", flexWrap:"wrap", gap:6}}>
+                {st.techs.map((t,j)=>(
+                  <button key={j} onClick={()=>goToModality(t)}
+                    title={`See IP Commercialisation modalities related to: ${t}`}
+                    style={{fontSize:12, color:"#1F2937", padding:"5px 11px", borderRadius:6, background:"#F9FAFB", border:"1px solid "+st.borderColor+"40", cursor:"pointer", fontWeight:500, transition:"all .12s"}}
+                    onMouseOver={e=>{e.currentTarget.style.background=st.borderColor+"15"; e.currentTarget.style.borderColor=st.borderColor;}}
+                    onMouseOut={e=>{e.currentTarget.style.background="#F9FAFB"; e.currentTarget.style.borderColor=st.borderColor+"40";}}>
+                    <TipText>{t}</TipText>
+                    <span style={{marginLeft:6, color:st.borderColor, fontSize:11, fontWeight:700}}>↗</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div style={{display:"flex", flexWrap:"wrap", gap:8, marginBottom:14}}>
+              <IntensityBadge label="Patent" level={st.patentIntensity}/>
+              <IntensityBadge label="Trade Secret" level={st.secretIntensity}/>
+              <span style={{fontSize:11, fontWeight:500, padding:"4px 10px", borderRadius:4, background:"#F3F4F6", color:"#374151", maxWidth:600}}>
+                <strong>Structural <T c="IP"/> Control:</strong> <TipText>{st.structuralControl}</TipText>
+              </span>
+            </div>
+            {st.domPatent && (
+              <div style={{display:"inline-flex", alignItems:"center", gap:6, background:"#ECFDF5", border:"1px solid #A7F3D0", borderRadius:6, padding:"6px 12px", marginBottom:14, fontSize:12, color:"#064E3B", fontWeight:600}}>
+                {T_.flag} {T_.name} Patent/Asset: <TipText>{st.domPatent}</TipText>
+              </div>
+            )}
+            <div style={{marginBottom:14}}>
+              <h4 style={{fontSize:12, fontWeight:700, color:"#6B7280", textTransform:"uppercase", letterSpacing:1, marginBottom:8}}>Patent Holders</h4>
+              <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(240px, 1fr))", gap:8}}>
+                {st.holders.map((h,j)=>(
+                  <div key={j} className="ph-card" style={{padding:"10px 14px", borderRadius:8, background:"#FAFAFA", border:"1px solid #E5E7EB", display:"flex", alignItems:"flex-start", gap:8}}>
+                    <span style={{fontSize:18, lineHeight:1}}>{flag(h.country)}</span>
+                    <div style={{minWidth:0}}>
+                      <div style={{fontSize:13, fontWeight:700, color:"#1F2937"}}>{h.company}</div>
+                      <div style={{fontSize:11, color:"#6B7280", lineHeight:1.4}}><TipText>{h.detail}</TipText></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            {st.domAssets && (
+              <div style={{background:"#FFFBEB", border:"1px solid #FDE68A", borderRadius:8, padding:"12px 16px", marginBottom:10}}>
+                <h4 style={{fontSize:12, fontWeight:700, color:"#92400E", marginBottom:4}}>{T_.flag} Domestic <T c="IP"/> Assets & Capabilities</h4>
+                <p style={{fontSize:13, color:"#78350F", lineHeight:1.6, margin:0}}><TipText>{st.domAssets}</TipText></p>
+              </div>
+            )}
+            {st.trend && (
+              <div style={{background:"#F0FDF4", border:"1px solid #BBF7D0", borderRadius:8, padding:"10px 14px", marginBottom:10}}>
+                <p style={{fontSize:12, color:"#166534", lineHeight:1.5, margin:0, fontWeight:500}}>Trend: <TipText>{st.trend}</TipText></p>
+              </div>
+            )}
+            {st.target && (
+              <div style={{background:"#ECFDF5", border:"1px solid #A7F3D0", borderRadius:8, padding:"10px 14px"}}>
+                <p style={{fontSize:12, color:"#064E3B", lineHeight:1.5, margin:0, fontWeight:500}}>Target: <TipText>{st.target}</TipText></p>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ─── POLICIES TAB ───
+const PoliciesTab = ({country}) => {
+  const POLICIES = COUNTRY_DATA[country].policies;
+  const T_ = COUNTRY_THEMES[country];
+  const dims = [
+    {key:"trade", label:"Trade", color:"#2563EB", desc:"Policies governing market access, local content, and trade agreements."},
+    {key:"fiscal", label:"Fiscal", color:"#EA580C", desc:"Tax credits, subsidies, concessional finance, and blended instruments."},
+    {key:"regulatory", label:"Regulatory", color:"#059669", desc:"Legal frameworks, standards, and sectoral masterplans."},
+  ];
+  return (
+    <div style={{maxWidth:1200, margin:"0 auto", padding:"16px"}}>
+      <div style={{background:"#fff", borderRadius:12, border:"1px solid #E5E7EB", padding:"20px 24px", marginBottom:20}}>
+        <h2 style={{fontSize:20, fontWeight:700, color:"#111827", margin:0, marginBottom:8}}>{T_.flag} {T_.name} — Green Industrialisation Policies</h2>
+        <p style={{fontSize:14, color:"#4B5563", lineHeight:1.65, margin:0}}>
+          The country's policy architecture sits at the intersection of trade preference, fiscal incentive, and regulatory scaffolding. Read each dimension below as a distinct vector through which the state bargains with foreign technology providers, international climate-finance actors, and domestic industrial constituencies.
+        </p>
+      </div>
+      {dims.map(d => (
+        <div key={d.key} style={{marginBottom:24}}>
+          <div style={{display:"flex", alignItems:"center", gap:12, marginBottom:12}}>
+            <div style={{width:6, height:28, background:d.color, borderRadius:3}}></div>
+            <h3 style={{fontSize:17, fontWeight:700, color:"#111827", margin:0}}>{d.label}</h3>
+            <span style={{fontSize:12, color:"#6B7280"}}>{d.desc}</span>
+          </div>
+          <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(320px, 1fr))", gap:14}}>
+            {(POLICIES[d.key]||[]).map((p,i)=>(
+              <div key={i} className="policy-card" style={{background:"#fff", border:"1px solid #E5E7EB", borderTop:"3px solid "+d.color, borderRadius:10, padding:"16px 18px"}}>
+                <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:8, marginBottom:6}}>
+                  <h4 style={{fontSize:14, fontWeight:700, color:"#111827", margin:0}}>{p.name}</h4>
+                  <span style={{fontSize:10, color:d.color, background:d.color+"15", padding:"2px 6px", borderRadius:4, fontWeight:700, whiteSpace:"nowrap"}}>{p.year}</span>
+                </div>
+                <p style={{fontSize:12, color:"#4B5563", lineHeight:1.6, margin:"0 0 10px 0"}}><TipText>{p.summary}</TipText></p>
+                {p.link && <a className="policy-link" href={p.link} target="_blank" rel="noopener noreferrer" style={{fontSize:11}}>→ Primary source</a>}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// ─── TARGETS TAB ───
+const TargetsTab = ({country}) => {
+  const SECTORS = COUNTRY_DATA[country].sectors;
+  const T_ = COUNTRY_THEMES[country];
+  return (
+  <div style={{maxWidth:1200, margin:"0 auto", padding:"16px"}}>
+    <div style={{background:"#fff", borderRadius:12, border:"1px solid #E5E7EB", padding:"20px 24px", marginBottom:20}}>
+      <h2 style={{fontSize:20, fontWeight:700, color:"#111827", margin:0, marginBottom:8}}>{T_.flag} {T_.name} — Targets per Value Chain Stage</h2>
+      <p style={{fontSize:14, color:"#4B5563", lineHeight:1.65, margin:0}}>
+        Sectoral targets organised per sector and per value chain stage. The pattern is consistent across both cases: ambitious deployment and assembly targets downstream, modest midstream targets tied to licensed assembly, and near-absence of upstream manufacturing targets. The structural condition of the <T c="IP"/> landscape is legible in the distribution itself.
+      </p>
+    </div>
+    {SECTORS.map(s => (
+      <div key={s.id} style={{background:"#fff", borderRadius:12, border:"1px solid #E5E7EB", borderLeft:"5px solid "+s.color, padding:"18px 22px", marginBottom:16}}>
+        <div style={{display:"flex", alignItems:"center", gap:12, marginBottom:10, flexWrap:"wrap"}}>
+          <h3 style={{fontSize:16, fontWeight:700, color:"#111827", margin:0}}>{s.name}</h3>
+          <StatusBadge status={s.status}/>
+        </div>
+        <p style={{fontSize:13, color:"#4B5563", lineHeight:1.65, margin:"0 0 14px 0", fontStyle:"italic"}}><TipText>{s.targets}</TipText></p>
+        <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(280px, 1fr))", gap:12}}>
+          {s.stages.map((st,i)=>(
+            <div key={i} style={{border:"1px solid #E5E7EB", borderLeft:"4px solid "+st.borderColor, borderRadius:8, padding:"12px 14px", background:"#FAFAFA"}}>
+              <div style={{fontSize:12, fontWeight:700, color:st.borderColor, marginBottom:4, textTransform:"uppercase", letterSpacing:0.5}}>{st.name}</div>
+              <div style={{fontSize:13, color:"#111827", fontWeight:600, marginBottom:4}}><StatusBadge status={st.domPosition}/></div>
+              <p style={{fontSize:12, color:"#374151", lineHeight:1.55, margin:0}}><TipText>{st.target}</TipText></p>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+);};
+
+// ─── FINANCING TAB ───
+const FinancingTab = ({country}) => {
+  const D_ = COUNTRY_DATA[country];
+  const T_ = COUNTRY_THEMES[country];
+  const FINANCING_INSTRUMENTS = D_.financing;
+  const FINANCING_TIMELINE = D_.timeline;
+  const GOVERNANCE = D_.governance;
+  const totals = {};
+  FINANCING_INSTRUMENTS.forEach(i => { totals[i.type] = (totals[i.type]||0) + 1; });
+  const maxVal = Math.max(...FINANCING_TIMELINE.map(y=>y.value));
+  // Normalise governance.apex to array for unified rendering
+  const apexArr = Array.isArray(GOVERNANCE.apex) ? GOVERNANCE.apex : [GOVERNANCE.apex];
+  return (
+    <div style={{maxWidth:1200, margin:"0 auto", padding:"16px"}}>
+      <div style={{background:"#fff", borderRadius:12, border:"1px solid #E5E7EB", padding:"20px 24px", marginBottom:20}}>
+        <h2 style={{fontSize:20, fontWeight:700, color:"#111827", margin:0, marginBottom:8}}>{T_.flag} {T_.name} — Green Industrialisation Financing Architecture</h2>
+        <p style={{fontSize:14, color:"#4B5563", lineHeight:1.65, margin:0}}><TipText>{D_.financingPara}</TipText></p>
+      </div>
+
+      <h3 style={{fontSize:16, fontWeight:700, color:"#111827", marginBottom:12}}>Financing Instruments ({FINANCING_INSTRUMENTS.length})</h3>
+      <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(300px, 1fr))", gap:14, marginBottom:28}}>
+        {FINANCING_INSTRUMENTS.map((ins,i)=>{
+          const c = TYPE_COLORS[ins.type] || TYPE_COLORS.fiscal;
+          return (
+            <div key={i} style={{background:c.bg, border:"1px solid "+c.border+"44", borderLeft:"4px solid "+c.border, borderRadius:10, padding:"14px 16px"}}>
+              <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:8, marginBottom:6}}>
+                <h4 style={{fontSize:13, fontWeight:700, color:"#111827", margin:0}}>{ins.name}</h4>
+                <span style={{fontSize:9, color:c.border, background:"#fff", padding:"2px 6px", borderRadius:4, fontWeight:700, textTransform:"uppercase"}}>{c.label}</span>
+              </div>
+              <div style={{fontSize:16, fontWeight:700, color:c.border, marginBottom:4}}>{ins.value}</div>
+              <div style={{fontSize:11, color:"#374151", marginBottom:6}}><strong>Period:</strong> {ins.period}</div>
+              <div style={{fontSize:11, color:"#374151", marginBottom:6}}><strong>Sectors:</strong> <TipText>{ins.sectors}</TipText></div>
+              <div style={{fontSize:11, color:"#374151", marginBottom:6}}><strong>Institution:</strong> <TipText>{ins.institution}</TipText></div>
+              <p style={{fontSize:11, color:"#4B5563", lineHeight:1.5, margin:0, fontStyle:"italic"}}><TipText>{ins.detail}</TipText></p>
+            </div>
+          );
+        })}
+      </div>
+
+      <h3 style={{fontSize:16, fontWeight:700, color:"#111827", marginBottom:12}}>Investment Timeline ({D_.financingCurrency} bn/year)</h3>
+      <div style={{background:"#fff", borderRadius:12, border:"1px solid #E5E7EB", padding:"18px 22px", marginBottom:28}}>
+        {FINANCING_TIMELINE.map((y,i)=>(
+          <div key={i} style={{marginBottom:10}}>
+            <div style={{display:"flex", alignItems:"center", gap:10, marginBottom:4}}>
+              <span style={{fontSize:13, fontWeight:700, color:"#111827", minWidth:48}}>{y.year}</span>
+              <div style={{flex:1, background:"#F3F4F6", borderRadius:4, height:22, position:"relative", overflow:"hidden"}}>
+                <div style={{width:(y.value/maxVal*100)+"%", height:"100%", background:"linear-gradient(90deg, "+T_.header+", #10B981)", borderRadius:4}}></div>
+                <span style={{position:"absolute", left:8, top:3, fontSize:11, color:"#fff", fontWeight:700}}>{D_.financingCurrency} {y.value} bn</span>
+              </div>
+            </div>
+            <div style={{fontSize:11, color:"#6B7280", paddingLeft:58, lineHeight:1.4}}><TipText>{y.milestone}</TipText></div>
+          </div>
+        ))}
+      </div>
+
+      <h3 style={{fontSize:16, fontWeight:700, color:"#111827", marginBottom:12}}>Governance Architecture</h3>
+      <div style={{background:"#fff", borderRadius:12, border:"1px solid #E5E7EB", padding:"20px 24px", marginBottom:24}}>
+        {apexArr.map((a,k)=>(
+          <div key={k} style={{background:T_.header, color:"#fff", borderRadius:10, padding:"14px 18px", marginBottom:14, textAlign:"center"}}>
+            <div style={{fontSize:11, color:T_.accent, textTransform:"uppercase", letterSpacing:1, marginBottom:4}}>Political Apex</div>
+            <div style={{fontSize:15, fontWeight:700}}>{a.name}</div>
+            <div style={{fontSize:12, color:T_.accent, marginTop:4}}><TipText>{a.role}</TipText></div>
+            {a.note && <div style={{fontSize:11, color:T_.accent, marginTop:2, opacity:0.85}}><TipText>{a.note}</TipText></div>}
+          </div>
+        ))}
+        {[
+          {title:"Line Ministries", color:"#2563EB", items:GOVERNANCE.ministries||[]},
+          {title:"Finance Hubs (Development Finance Institutions)", color:"#059669", items:GOVERNANCE.financeHubs||[]},
+          {title:"Regulators", color:"#EA580C", items:GOVERNANCE.regulators||[]},
+          {title:"Cross-cutting / International", color:"#7C3AED", items:GOVERNANCE.crosscutting||[]},
+        ].map((row,i)=>(
+          <div key={i} style={{marginBottom:14}}>
+            <div style={{fontSize:11, fontWeight:700, color:row.color, textTransform:"uppercase", letterSpacing:1, marginBottom:8}}>{row.title}</div>
+            <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(220px, 1fr))", gap:8}}>
+              {row.items.map((it,j)=>(
+                <div key={j} style={{border:"1px solid "+row.color+"33", borderLeft:"3px solid "+row.color, borderRadius:6, padding:"8px 12px", background:"#FAFAFA"}}>
+                  <div style={{fontSize:12, fontWeight:700, color:"#111827"}}><TipText>{it.name}</TipText></div>
+                  <div style={{fontSize:11, color:"#4B5563", lineHeight:1.5, marginTop:2}}><TipText>{it.role}</TipText></div>
+                  {it.note && <div style={{fontSize:10, color:"#6B7280", lineHeight:1.4, marginTop:3, fontStyle:"italic"}}><TipText>{it.note}</TipText></div>}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// ─── REFS & ABBR TAB ───
+const RefsTab = ({country}) => {
+  const REFERENCES = COUNTRY_DATA[country].references;
+  const T_ = COUNTRY_THEMES[country];
+  const [expanded, setExpanded] = useState(null);
+  // Normalise: BR uses {refs:[{title,detail,year,url}]}, SA uses {items:[{cite,link}]}
+  const getList = (cat) => cat.items || cat.refs || [];
+  const renderItem = (r,j,len) => {
+    if (r.cite) return (
+      <div key={j} style={{padding:"8px 0", borderBottom:j<len-1?"1px solid #F3F4F6":"none"}}>
+        <div style={{fontSize:13, color:"#111827", lineHeight:1.55}}><TipText>{r.cite}</TipText>
+          {r.link && <a href={r.link} target="_blank" rel="noopener noreferrer" style={{marginLeft:8, fontSize:11, color:"#2563EB"}}>→ link</a>}
+        </div>
+      </div>
+    );
+    return (
+      <div key={j} style={{padding:"8px 0", borderBottom:j<len-1?"1px solid #F3F4F6":"none"}}>
+        <div style={{fontSize:13, fontWeight:600, color:"#047857"}}>{r.title}{r.url && <a href={r.url} target="_blank" rel="noopener noreferrer" style={{marginLeft:8, fontSize:11, color:"#2563EB"}}>→ link</a>}</div>
+        {r.detail && <div style={{fontSize:12, color:"#4B5563", marginTop:2}}><TipText>{r.detail}</TipText></div>}
+        {r.year && <span style={{fontSize:10, color:"#9CA3AF", background:"#F3F4F6", borderRadius:4, padding:"1px 6px", marginTop:4, display:"inline-block"}}>{r.year}</span>}
+      </div>
+    );
+  };
+  return (
+    <div style={{maxWidth:1200, margin:"0 auto", padding:"16px"}}>
+      <div style={{background:"#fff", borderRadius:12, border:"1px solid #E5E7EB", padding:"20px 24px", marginBottom:20}}>
+        <h2 style={{fontSize:20, fontWeight:700, color:"#111827", margin:0, marginBottom:8}}>{T_.flag} {T_.name} — References & Abbreviations</h2>
+        <p style={{fontSize:14, color:"#4B5563", lineHeight:1.65, margin:0}}>
+          Sources underpinning the dashboard. Each citation resolves, where available, to a primary source. Abbreviations are listed below and also surface on hover throughout the dashboard.
+        </p>
+      </div>
+      {REFERENCES.map((cat,i)=> {
+        const list = getList(cat);
+        return (
+          <div key={i} style={{background:"#fff", borderRadius:10, border:"1px solid #E5E7EB", marginBottom:10, overflow:"hidden"}}>
+            <button onClick={()=>setExpanded(expanded===i?null:i)} style={{width:"100%", display:"flex", justifyContent:"space-between", alignItems:"center", padding:"14px 18px", border:"none", background:expanded===i?"#F0FDF4":"#F9FAFB", cursor:"pointer"}}>
+              <span style={{fontWeight:700, fontSize:14, color:"#111827"}}>{cat.category}</span>
+              <span style={{fontSize:12, color:"#6B7280"}}>{list.length} {expanded===i?"▲":"▼"}</span>
+            </button>
+            {expanded===i && (
+              <div style={{padding:"12px 18px", borderLeft:"3px solid #A7F3D0", marginLeft:12}}>
+                {list.map((r,j)=> renderItem(r,j,list.length))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+
+      <div style={{background:"#fff", borderRadius:12, border:"1px solid #E5E7EB", padding:"20px 24px", marginTop:24}}>
+        <h3 style={{fontSize:16, fontWeight:700, color:"#111827", marginBottom:8}}>Abbreviations Glossary ({Object.keys(ABBR).length} terms — consolidated across both cases)</h3>
+        <p style={{fontSize:12, color:"#6B7280", marginBottom:14}}>Hover any underlined term throughout the dashboard for an inline definition.</p>
+        <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(320px, 1fr))", gap:4}}>
+          {Object.keys(ABBR).sort().map(k=>(
+            <div key={k} style={{display:"grid", gridTemplateColumns:"110px 1fr", gap:8, padding:"6px 10px", borderRadius:4, background:"#FAFAFA"}}>
+              <span style={{fontSize:11, fontWeight:700, color:"#047857", fontFamily:"ui-monospace, Menlo, monospace"}}>{k}</span>
+              <span style={{fontSize:11, color:"#374151", lineHeight:1.4}}>{ABBR[k]}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ─── IP COMMERCIALISATION TAB (v5) ─────────────────────────────────
+const IPCommercialisationTab = ({country, filter, setFilter, view, setView, setTab, setSectorIdOverride}) => {
+  const D_ = COUNTRY_DATA[country];
+  const T_ = COUNTRY_THEMES[country];
+  const IPC = D_.ipcomm;
+  // view + setView come from Dashboard (lifted state); fallback to local for safety.
+  const [localView, setLocalView] = useState("modality");
+  const v = view || localView;
+  const setV = setView || setLocalView;
+  // Sector pill click handler (reverse nav: modality → value chains).
+  const sectorPillClick = (sectorId) => {
+    if (!setSectorIdOverride || !setTab) return;
+    if (!sectorId || sectorId==="cross") return; // cross-cutting has no chain target
+    setSectorIdOverride(sectorId);
+    setTab("chains");
+  };
+  // Filter helpers ---------------------------------------------------
+  const fltSectorId = filter?.sectorId || null;
+  const fltSectorName = filter?.sectorName || null;
+  const fltTech = filter?.techName || null;
+  // Normalise tech filter to lowercase tokens for matching.
+  const techHaystack = (fltTech || "").toLowerCase();
+  const techMatches = (entry) => {
+    if (!fltTech) return false;
+    const t = (entry.techTags || []).map(x=>x.toLowerCase());
+    // Match if any techTag is contained in clicked tech name, OR clicked tech name contains the tag.
+    return t.some(tag => techHaystack.includes(tag) || tag.includes(techHaystack));
+  };
+  const passesFilter = (entry) => {
+    if (!fltSectorId) return true;
+    // Sector-cross entries surface for any sector filter (they apply broadly).
+    if (entry.sectorId === "cross") return true;
+    return entry.sectorId === fltSectorId;
+  };
+  // For the displayed entries: first apply filter, then sort with tech-matching first.
+  const visibleModality = IPC.modality
+    .filter(passesFilter)
+    .map(e=>({...e, _techHit: techMatches(e)}))
+    .sort((a,b)=>(b._techHit?1:0)-(a._techHit?1:0));
+
+  // Modality category colour map
+  const modColour = (kind) => {
+    if (kind.startsWith("Licensing")) return "#2563EB";
+    if (kind.startsWith("Cross-licensing")) return "#7C3AED";
+    if (kind.startsWith("Joint venture")) return "#0891B2";
+    if (kind.startsWith("FDI")) return "#0D9488";
+    if (kind.startsWith("Bilateral MoU")) return "#0EA5E9";
+    if (kind.startsWith("Compulsory")) return "#DC2626";
+    if (kind.startsWith("Open pledge")) return "#16A34A";
+    if (kind.startsWith("Patent pool")) return "#F59E0B";
+    if (kind.startsWith("Technology transfer")) return "#9333EA";
+    if (kind.startsWith("Patent sale")) return "#EA580C";
+    return "#6B7280";
+  };
+
+  // Pipeline kind colour map
+  const pipeColour = (kind) => {
+    if (kind.startsWith("Multilateral")) return "#7C3AED";
+    if (kind.startsWith("National TTO")) return "#0891B2";
+    if (kind.startsWith("University TTO")) return "#0D9488";
+    if (kind.startsWith("DFI")) return "#F59E0B";
+    if (kind.startsWith("Sectoral accelerator")) return "#16A34A";
+    if (kind.startsWith("Patent pool")) return "#EA580C";
+    if (kind.startsWith("Standards body")) return "#4338CA";
+    return "#6B7280";
+  };
+
+  return (
+    <div style={{maxWidth:1200, margin:"0 auto", padding:"16px"}}>
+
+      {/* Header / intro */}
+      <div style={{background:"#fff", borderRadius:12, border:"1px solid #E5E7EB", padding:"20px 24px", marginBottom:16, borderTop:"4px solid "+T_.header}}>
+        <h2 style={{fontSize:22, fontWeight:700, color:"#111827", margin:"0 0 6px"}}>{T_.flag} {T_.name} — <T c="IP"/> Commercialisation</h2>
+        <p style={{fontSize:13, color:"#4B5563", lineHeight:1.65, margin:"0 0 8px"}}>
+          The bridge between the <T c="IP"/> regime as institutional structure and the actual flows of green technology into the country. <strong>Modality</strong> tracks how <T c="IP"/> is being made available — licensing, JVs, FDI, cross-licensing, patent pools, open pledges, compulsory licensing, multilateral technology transfer. <strong>Pipeline</strong> maps the upstream marketplace — multilateral platforms, national tech-transfer offices, university TTOs, DFI-linked vehicles, sectoral accelerators, standards bodies.
+        </p>
+        <p style={{fontSize:12, color:"#6B7280", lineHeight:1.65, margin:0, fontStyle:"italic"}}>
+          Alpha v5 layer. Where terms are confidential, the cell is flagged 'undisclosed' or 'indirect'. The absence is itself analytical content.
+        </p>
+      </div>
+
+      {/* Sub-view toggle */}
+      <div style={{display:"flex", gap:8, marginBottom:14, alignItems:"center", flexWrap:"wrap"}}>
+        <span style={{fontSize:11, fontWeight:700, color:"#6B7280", textTransform:"uppercase", letterSpacing:1.5, marginRight:4}}>View</span>
+        {[
+          {k:"modality", label:"Modality  —  how IP is being made available"},
+          {k:"pipeline", label:"Pipeline  —  upstream marketplace and tech-transfer infrastructure"}
+        ].map(opt => (
+          <button key={opt.k} onClick={()=>setV(opt.k)}
+            style={{
+              padding:"10px 18px", borderRadius:8, border:"1px solid "+(v===opt.k ? T_.header : "#D1D5DB"),
+              background: v===opt.k ? T_.header : "#fff",
+              color: v===opt.k ? "#fff" : "#374151",
+              fontSize:12.5, fontWeight:600, cursor:"pointer", transition:"all .15s"
+            }}>{opt.label}</button>
+        ))}
+      </div>
+
+      {/* Filter chip — visible when arriving from Value Chains */}
+      {(fltSectorId || fltTech) && v==="modality" && (
+        <div style={{background:"#EFF6FF", border:"1px solid #BFDBFE", borderRadius:10, padding:"12px 16px", marginBottom:14, display:"flex", flexWrap:"wrap", alignItems:"center", gap:10, justifyContent:"space-between"}}>
+          <div style={{display:"flex", flexWrap:"wrap", alignItems:"center", gap:10}}>
+            <span style={{fontSize:10.5, fontWeight:700, color:"#1E3A8A", textTransform:"uppercase", letterSpacing:1.2}}>Filtered from Value Chains</span>
+            {fltSectorName && <span style={{fontSize:12, color:"#1E40AF", background:"#fff", padding:"4px 10px", borderRadius:99, border:"1px solid #BFDBFE", fontWeight:600}}>Sector: {fltSectorName}</span>}
+            {fltTech && <span style={{fontSize:12, color:"#1E40AF", background:"#fff", padding:"4px 10px", borderRadius:99, border:"1px solid #BFDBFE", fontWeight:600}}>Technology: {fltTech}</span>}
+            <span style={{fontSize:11, color:"#1E40AF", fontStyle:"italic"}}>
+              Cross-cutting entries (e.g., compulsory licensing) surface alongside sector-specific ones. {fltTech && "Entries tagged with this technology are highlighted and shown first."}
+            </span>
+          </div>
+          <button onClick={()=>setFilter && setFilter(null)}
+            style={{padding:"6px 12px", border:"1px solid #1E40AF", background:"#fff", color:"#1E40AF", borderRadius:6, fontSize:11.5, fontWeight:700, cursor:"pointer"}}>
+            × Clear filter
+          </button>
+        </div>
+      )}
+
+      {/* ─── MODALITY VIEW ─── */}
+      {v==="modality" && (
+        <div>
+          {/* Modality legend */}
+          <div style={{background:"#F9FAFB", border:"1px solid #E5E7EB", borderRadius:10, padding:"10px 14px", marginBottom:14, display:"flex", flexWrap:"wrap", gap:8, alignItems:"center"}}>
+            <span style={{fontSize:10.5, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:1, marginRight:6}}>Modality taxonomy</span>
+            {[
+              "Licensing — bilateral","Cross-licensing","Joint venture with know-how","FDI with embedded production","Bilateral MoU","Patent pool membership","Open pledge / open-source","Compulsory licensing","Technology transfer agreement","Patent sale / acquisition"
+            ].map(k=>(
+              <span key={k} style={{fontSize:10, color:"#fff", background:modColour(k), padding:"2px 8px", borderRadius:99, fontWeight:600}}>{k}</span>
+            ))}
+          </div>
+
+          {/* Empty state if filter narrows to zero sector matches */}
+          {visibleModality.length === 0 && (
+            <div style={{background:"#FFFBEB", border:"1px solid #FDE68A", borderRadius:10, padding:"16px 18px", marginBottom:12}}>
+              <div style={{fontSize:12.5, fontWeight:700, color:"#92400E", marginBottom:4}}>No modality entries catalogued for this sector in the alpha dataset.</div>
+              <div style={{fontSize:12, color:"#78350F", lineHeight:1.6}}>
+                The absence is itself analytical content: either the modalities operative in this sector are not yet visible in the public domain, or the dashboard's coverage of this sector needs to be expanded in the next iteration. The methodological note at the bottom of the tab elaborates.
+              </div>
+            </div>
+          )}
+
+          {/* Modality cards */}
+          <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(360px,1fr))", gap:12}}>
+            {visibleModality.map((m,i)=>{
+              const hit = m._techHit;
+              const reverseClickable = m.sectorId && m.sectorId !== "cross" && setSectorIdOverride && setTab;
+              return (
+                <div key={i} className="ph-card" style={{background:"#fff", border:hit?"2px solid "+T_.header:"1px solid #E5E7EB", borderRadius:10, padding:"14px 16px", display:"flex", flexDirection:"column", gap:6, borderLeft:"4px solid "+modColour(m.kind), boxShadow:hit?"0 4px 12px rgba(0,0,0,0.08)":"none"}}>
+                  {hit && (
+                    <div style={{fontSize:10, fontWeight:700, color:"#fff", background:T_.header, padding:"3px 8px", borderRadius:4, alignSelf:"flex-start", letterSpacing:0.4, textTransform:"uppercase"}}>★ Matches technology: {fltTech}</div>
+                  )}
+                  <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:8, flexWrap:"wrap"}}>
+                    <span style={{fontSize:10.5, fontWeight:700, color:"#fff", background:modColour(m.kind), padding:"2px 8px", borderRadius:99}}>{m.kind}</span>
+                    {reverseClickable ? (
+                      <button onClick={()=>sectorPillClick(m.sectorId)} title={`Open ${m.sector} in Value Chains`}
+                        style={{fontSize:10, fontWeight:600, color:"#1E40AF", letterSpacing:0.5, textTransform:"uppercase", background:"#EFF6FF", border:"1px solid #BFDBFE", padding:"2px 8px", borderRadius:99, cursor:"pointer"}}>
+                        {m.sector} ↗
+                      </button>
+                    ) : (
+                      <span style={{fontSize:10, fontWeight:600, color:"#6B7280", letterSpacing:0.5, textTransform:"uppercase"}}>{m.sector}</span>
+                    )}
+                  </div>
+                  <div style={{fontSize:13.5, fontWeight:700, color:"#111827", lineHeight:1.4, marginTop:4}}>{m.actors}</div>
+                  <div style={{fontSize:12, color:"#374151", lineHeight:1.55}}><span style={{fontWeight:600, color:"#6B7280"}}>Scope:</span> {m.scope}</div>
+                  <div style={{fontSize:12, color:"#374151", lineHeight:1.55}}><span style={{fontWeight:600, color:"#6B7280"}}>Terms:</span> <em>{m.terms}</em></div>
+                  <div style={{fontSize:11, color:"#6B7280", lineHeight:1.55}}><span style={{fontWeight:600}}>Visibility:</span> {m.visibility}</div>
+                  {m.techTags && m.techTags.length > 0 && (
+                    <div style={{display:"flex", flexWrap:"wrap", gap:4, marginTop:2}}>
+                      {m.techTags.slice(0,6).map((t,k)=>(
+                        <span key={k} style={{fontSize:9.5, color:"#4B5563", background:"#F3F4F6", padding:"2px 7px", borderRadius:4, border:"1px solid #E5E7EB"}}>{t}</span>
+                      ))}
+                    </div>
+                  )}
+                  <div style={{fontSize:11.5, color:"#4B5563", lineHeight:1.6, fontStyle:"italic", marginTop:4, paddingTop:6, borderTop:"1px dashed #E5E7EB"}}>{m.notes}</div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ─── PIPELINE VIEW ─── */}
+      {v==="pipeline" && (
+        <div>
+          {/* Pipeline legend */}
+          <div style={{background:"#F9FAFB", border:"1px solid #E5E7EB", borderRadius:10, padding:"10px 14px", marginBottom:14, display:"flex", flexWrap:"wrap", gap:8, alignItems:"center"}}>
+            <span style={{fontSize:10.5, fontWeight:700, color:"#374151", textTransform:"uppercase", letterSpacing:1, marginRight:6}}>Pipeline categories</span>
+            {[
+              "Multilateral marketplace","National TTO","University TTO","DFI-linked platform","Sectoral accelerator","Patent pool — open to members","Standards body"
+            ].map(k=>(
+              <span key={k} style={{fontSize:10, color:"#fff", background:pipeColour(k), padding:"2px 8px", borderRadius:99, fontWeight:600}}>{k}</span>
+            ))}
+          </div>
+
+          {/* Pipeline cards */}
+          <div style={{display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(380px,1fr))", gap:12}}>
+            {IPC.pipeline.map((p,i)=>(
+              <div key={i} className="ph-card" style={{background:"#fff", border:"1px solid #E5E7EB", borderRadius:10, padding:"14px 16px", display:"flex", flexDirection:"column", gap:6, borderLeft:"4px solid "+pipeColour(p.kind)}}>
+                <div style={{display:"flex", justifyContent:"space-between", alignItems:"flex-start", gap:8, flexWrap:"wrap"}}>
+                  <span style={{fontSize:10.5, fontWeight:700, color:"#fff", background:pipeColour(p.kind), padding:"2px 8px", borderRadius:99}}>{p.kind}</span>
+                  <span style={{fontSize:10, fontWeight:600, color:"#6B7280", letterSpacing:0.5, textTransform:"uppercase"}}>Maturity: {p.maturity}</span>
+                </div>
+                <div style={{fontSize:14, fontWeight:700, color:"#111827", lineHeight:1.4, marginTop:4}}>{p.anchor}</div>
+                <div style={{fontSize:12, color:"#374151", lineHeight:1.55}}><span style={{fontWeight:600, color:"#6B7280"}}>Scope:</span> {p.scope}</div>
+                <div style={{fontSize:12, color:"#374151", lineHeight:1.55}}><span style={{fontWeight:600, color:"#6B7280"}}>{country==="br"?"Brazilian":"South African"} entries:</span> {p.entries}</div>
+                <div style={{fontSize:11.5, color:"#4B5563", lineHeight:1.55}}><span style={{fontWeight:600}}>Relevance:</span> {p.relevance}</div>
+                <div style={{fontSize:11.5, color:"#4B5563", lineHeight:1.6, fontStyle:"italic", marginTop:4, paddingTop:6, borderTop:"1px dashed #E5E7EB"}}>{p.notes}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Footer note */}
+      <div style={{marginTop:18, padding:"14px 16px", background:"#FFF7ED", border:"1px solid #FED7AA", borderRadius:10}}>
+        <div style={{fontSize:11.5, fontWeight:700, color:"#9A3412", textTransform:"uppercase", letterSpacing:1, marginBottom:4}}>Methodological note</div>
+        <div style={{fontSize:12.5, color:"#7C2D12", lineHeight:1.6}}>
+          Modality and Pipeline data are drawn from public corporate disclosures, regulatory registers (REIDI, MOVER, REIPPPP, JETP working-group records), multilateral platforms (WIPO GREEN, UNFCCC CTCN), and institutional reporting from <T c="DFI"/>s and tech-transfer offices. Where licensing terms are confidential — which is the majority case — the entry is flagged 'undisclosed' or 'indirect'. The absence of disclosure is, in this layer, treated as analytical content in its own right.
+        </div>
+      </div>
+
+    </div>
+  );
+};
+
+
+// ─── MAIN DASHBOARD ───
+function Dashboard() {
+  const [country, setCountry] = useState("sa");
+  const [tab, setTab] = useState("overview");
+  // v5 cross-navigation state ---------------------------
+  const [valueChainsSectorId, setValueChainsSectorId] = useState(null); // optional override
+  const [ipcommFilter, setIpcommFilter] = useState(null); // {sectorId, sectorName, techName} | null
+  const [ipcommView, setIpcommView] = useState("modality"); // shared between programmatic + user toggles
+  // Reset sector override + filter when country changes (sector ids differ across BR/SA)
+  React.useEffect(()=>{ setValueChainsSectorId(null); setIpcommFilter(null); }, [country]);
+  // -----------------------------------------------------
+  const T_ = COUNTRY_THEMES[country];
+  const tabs = [
+    {k:"overview", label:"Overview"},
+    {k:"chains", label:"Value Chains"},
+    {k:"policies", label:"Policies"},
+    {k:"targets", label:"Targets"},
+    {k:"finance", label:"Financing"},
+    {k:"ipcomm", label:"IP Commercialisation"},
+    {k:"refs", label:"References & Abbrevs"},
+  ];
+  return (
+    <div style={{minHeight:"100vh", background:"#F9FAFB"}}>
+      <div style={{background:T_.header, color:"#fff", padding:"18px 24px", boxShadow:"0 4px 12px rgba(0,0,0,0.15)"}}>
+        <div style={{maxWidth:1200, margin:"0 auto", display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:8}}>
+          <div>
+            <h1 style={{fontSize:20, fontWeight:700, margin:0}}>Consolidated Dashboard South Africa — Green Industrialisation & <T c="IP"/> Landscape v5.0</h1>
+            <p style={{fontSize:12, color:T_.accent, margin:"2px 0 0 0", letterSpacing:0.5}}>South Africa | <T c="IPR"/> & Green Industrialisation Programme | April 2026 | Equal International | Paulo Esteves</p>
+          </div>
+        </div>
+      </div>
+
+      <div style={{background:"#F0FDF4", borderBottom:"1px solid #A7F3D0", padding:"10px 24px"}}>
+        <div style={{maxWidth:1200, margin:"0 auto", display:"flex", alignItems:"center", gap:12, flexWrap:"wrap"}}>
+          <span style={{fontSize:11, fontWeight:700, color:"#064E3B", textTransform:"uppercase", letterSpacing:1}}>Case</span>
+          <span className="country-pill" style={{background: T_.header, color:"#fff", borderColor: T_.header}}>{T_.flag} {T_.name}</span>
+        </div>
+      </div>
+
+      <div style={{background:"#fff", borderBottom:"2px solid #E5E7EB"}}>
+        <div style={{maxWidth:1200, margin:"0 auto", display:"flex", gap:2, overflowX:"auto"}}>
+          {tabs.map(t=>(
+            <button key={t.k} className="tab-btn" onClick={()=>setTab(t.k)} style={{background:tab===t.k?T_.header:"transparent", color:tab===t.k?"#fff":"#4B5563", borderBottom:tab===t.k?"3px solid "+T_.header:"3px solid transparent"}}>{t.label}</button>
+          ))}
+        </div>
+      </div>
+
+      {tab==="overview" && <OpeningPage country={country} setTab={setTab} setCountry={setCountry}/>}
+      {tab==="chains" && <ValueChainsTab country={country} sectorIdOverride={valueChainsSectorId} setSectorIdOverride={setValueChainsSectorId} setTab={setTab} setIpcommFilter={setIpcommFilter} setIpcommView={setIpcommView}/>}
+      {tab==="policies" && <PoliciesTab country={country}/>}
+      {tab==="targets" && <TargetsTab country={country}/>}
+      {tab==="finance" && <FinancingTab country={country}/>}
+      {tab==="ipcomm" && <IPCommercialisationTab country={country} filter={ipcommFilter} setFilter={setIpcommFilter} view={ipcommView} setView={setIpcommView} setTab={setTab} setSectorIdOverride={setValueChainsSectorId}/>}
+      {tab==="refs" && <RefsTab country={country}/>}
+
+      <div style={{borderTop:"1px solid #E5E7EB", background:"#1F2937", color:"#9CA3AF", padding:"20px 24px", marginTop:24}}>
+        <div style={{maxWidth:1200, margin:"0 auto", display:"flex", justifyContent:"space-between", flexWrap:"wrap", gap:12}}>
+          <div style={{fontSize:12}}>
+            <span style={{color:"#D1D5DB", fontWeight:600}}>Equal International | <T c="IPR"/> & Green Industrialisation Programme</span>
+            <span style={{margin:"0 8px", color:"#4B5563"}}>|</span>
+            <span>April 2026</span>
+          </div>
+          <div style={{fontSize:12, color:"#D1D5DB", textAlign:"right"}}>
+            <div style={{fontWeight:600}}>Author: Paulo Esteves</div>
+            <div style={{fontSize:10, opacity:0.7, marginTop:2}}>Consolidated Dashboard South Africa — Green Industrialisation v5.0 | Single-country build derived from the consolidated v5 (May 2026)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.render(<Dashboard/>, document.getElementById("root"));
+
+</script>
+</body>
+</html>
