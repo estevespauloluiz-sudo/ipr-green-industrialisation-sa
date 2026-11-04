@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use or refer to this work, please cite it as below."
+type: dataset
+title: "Consolidated Dashboard South Africa: Green Industrialisation and IP Landscape"
+abstract: >-
+  Single-country interactive dashboard reconstructing South Africa's green
+  industrialisation effort through the international IP regime, the green
+  financial architecture and the domestic political economy of industrial
+  policy. IPR and Green Industrialisation research programme, Equal
+  International.
+authors:
+  - family-names: Esteves
+    given-names: Paulo
+    affiliation: "Pontifical Catholic University of Rio de Janeiro (PUC-Rio); Equal International"
+    orcid: "https://orcid.org/0000-0002-4288-417X"
+version: 5.0.0
+license: CC-BY-4.0
+url: "https://estevespauloluiz-sudo.github.io/ipr-green-industrialisation-sa/"
+repository-code: "https://github.com/estevespauloluiz-sudo/ipr-green-industrialisation-sa"
+keywords:
+  - South Africa
+  - green industrialisation
+  - intellectual property
+  - industrial policy
+  - climate finance
+  - dashboard

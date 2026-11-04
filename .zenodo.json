@@ -1,0 +1,45 @@
+{
+  "title": "Consolidated Dashboard South Africa: Green Industrialisation and IP Landscape",
+  "upload_type": "other",
+  "description": "<p>Single-country interactive dashboard reconstructing South Africa's green industrialisation effort as the articulation of three levels of analysis: the international intellectual property regime, the green financial architecture, and the domestic political economy of industrial policy. Part of the Intellectual Property Regimes and Green Industrialisation research programme, Equal International.</p><p>The dashboard organises the South African case across seven tabs: Overview; Value Chains (six sectors: solar PV, wind, battery and energy storage, green hydrogen, new energy vehicles and grid modernisation, each across three stages); Policies (trade, fiscal, regulatory); Targets; Financing (instruments, timeline, governance); IP Commercialisation (modality and pipeline); and References and Abbreviations. Every policy document is hyperlinked to its primary source.</p><p>This archive is a self-contained snapshot of the web application (a single HTML file built with React). All JavaScript libraries and styles are bundled locally so it renders offline: open <code>index.html</code> through a local web server. A live version is available at https://estevespauloluiz-sudo.github.io/ipr-green-industrialisation-sa/.</p>",
+  "creators": [
+    {
+      "name": "Esteves, Paulo",
+      "affiliation": "Pontifical Catholic University of Rio de Janeiro (PUC-Rio); Equal International",
+      "orcid": "0000-0002-4288-417X"
+    }
+  ],
+  "license": "cc-by-4.0",
+  "access_right": "open",
+  "language": "eng",
+  "version": "5.0.0",
+  "keywords": [
+    "South Africa",
+    "green industrialisation",
+    "intellectual property",
+    "industrial policy",
+    "climate finance",
+    "JETP",
+    "green value chains",
+    "green hydrogen",
+    "energy transition",
+    "technology transfer",
+    "dashboard",
+    "data visualisation"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://estevespauloluiz-sudo.github.io/ipr-green-industrialisation-sa/",
+      "relation": "isIdenticalTo",
+      "scheme": "url",
+      "resource_type": "other"
+    },
+    {
+      "identifier": "10.5281/zenodo.23951759",
+      "relation": "isSupplementTo",
+      "scheme": "doi",
+      "resource_type": "other"
+    }
+  ],
+  "notes": "Recommended citation: Esteves, P. (2026). Consolidated Dashboard South Africa: Green Industrialisation and IP Landscape (version 5.0) [Interactive dashboard]. IPR and Green Industrialisation research programme. Brighton: Equal International. Third-party components in vendor/ (React, Babel standalone, Tailwind CSS base styles) retain their own licences, included alongside them."
+}
