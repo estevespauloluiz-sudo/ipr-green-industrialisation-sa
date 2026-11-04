@@ -1,5 +1,7 @@
 # Consolidated Dashboard: South Africa
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23962315.svg)](https://doi.org/10.5281/zenodo.23962315)
+
 Single-country interactive dashboard reconstructing South Africa's green industrialisation effort as the articulation of three levels of analysis: the international IP regime, the green financial architecture, and the domestic political economy of industrial policy.
 
 Part of the IPR & Green Industrialisation research programme, Equal International.
@@ -12,9 +14,7 @@ The dashboard organises the South African case across seven navigation tabs: Ove
 
 ## Citation
 
-Esteves, P. (2026). *Consolidated Dashboard South Africa: Green Industrialisation and IP Landscape* (version 5.0) [Interactive dashboard]. IPR and Green Industrialisation research programme. Brighton: Equal International.
-
-<!-- After the first Zenodo release, add the DOI badge and DOI here. -->
+Esteves, P. (2026). *Consolidated Dashboard South Africa: Green Industrialisation and IP Landscape* (version 5.0) [Interactive dashboard]. IPR and Green Industrialisation research programme. Brighton: Equal International. https://doi.org/10.5281/zenodo.23962315
 
 ## Running offline
 
